@@ -73,6 +73,10 @@ for (const field of fieldellista) {//végigmegyünk a mezők listáján
         input.id = field.fieldid;//beállítjuk a bemeneti mező azonosítóját
     }
     fieldDiv.appendChild(input);//hozzáadjuk a bemeneti mezőt a mező divhez
+    fieldDiv.appendChild(document.createElement('br'));//hozzáadunk egy sortörést a mező divhez
+    const errorspan = document.createElement('span');//létrehozzuk a hiba üzenetet
+    errorspan.className = 'error';//beállítjuk a hiba üzenet class nevét
+    fieldDiv.appendChild(errorspan);//hozzáadjuk a hiba üzenetet a formhoz
 }
 
 const formbutton = document.createElement('button');//létrehozzuk a gombot
@@ -83,21 +87,35 @@ simaform.addEventListener('submit', (event) => {//hozzáadunk egy eseménykezel�
 
     const ertekek = {};//létrehozzuk az üres objektumot 
     const bemenetimezok = event.target.querySelectorAll('input, select');//lekérjük az összes bemeneti mezőt
+    let valid = true;//beállítjuk a valid változót igazra
     for (const bemenit of bemenetimezok) {//végigmegyünk az összes bemeneti mezőn
+        const errorDiv = bemenit.parentElement.querySelector('.error');//lekérjük a hiba üzenetet
+        if (!errorDiv) {//ha a hiba üzenet nem létezik
+            console.error('nincs errordield');//kiírjuk a hiba üzenetet a konzolra
+            return;//visszatérünk
+        }
+        errorDiv.textContent = '';//kiürítjük a hiba üzenetet
+        if (bemenit.value === '') {//ha a bemeneti mező üres
+            errorDiv.textContent = 'Kötelező megadni';//beállítjuk a hiba üzenetet
+            valid = false;//beállítjuk a valid változót hamisra
+        }
         ertekek[bemenit.id] = bemenit.value;//beállítjuk az objektum értékeit
     }
-    array.push(ertekek);//hozzáadjuk az objektumot a tömbhöz
-    const ujSor = document.createElement('tr');//létrehozzuk az új sort
-    tbody.appendChild(ujSor);//hozzáadjuk az új sort a törzshöz
+    if (valid) //ha a valid változó igaz
+    {
+        array.push(ertekek);//hozzáadjuk az objektumot a tömbhöz
+        const ujSor = document.createElement('tr');//létrehozzuk az új sort
+        tbody.appendChild(ujSor);//hozzáadjuk az új sort a törzshöz
 
-    const forrcella = document.createElement('td');//létrehozzuk a cellát
-    forrcella.textContent = ertekek.forradalom;//beállítjuk a cella tartalmát
-    ujSor.appendChild(forrcella);//hozzáadjuk a cellát az új sorhoz
-    const evszamcell = document.createElement('td');//létrehozzuk a cellát
-    evszamcell.textContent = ertekek.evszam;//beállítjuk a cella tartalmát
-    ujSor.appendChild(evszamcell);//hozzáadjuk a cellát az új sorhoz
-    const sikerescella = document.createElement('td');//létrehozzuk a cellát
-    sikerescella.textContent = ertekek.sikeres;//beállítjuk a cella tartalmát
-    ujSor.appendChild(sikerescella);//hozzáadjuk a cellát az új sorhoz
+        const forrcella = document.createElement('td');//létrehozzuk a cellát
+        forrcella.textContent = ertekek.forradalom;//beállítjuk a cella tartalmát
+        ujSor.appendChild(forrcella);//hozzáadjuk a cellát az új sorhoz
+        const evszamcell = document.createElement('td');//létrehozzuk a cellát
+        evszamcell.textContent = ertekek.evszam;//beállítjuk a cella tartalmát
+        ujSor.appendChild(evszamcell);//hozzáadjuk a cellát az új sorhoz
+        const sikerescella = document.createElement('td');//létrehozzuk a cellát
+        sikerescella.textContent = ertekek.sikeres;//beállítjuk a cella tartalmát
+        ujSor.appendChild(sikerescella);//hozzáadjuk a cellát az új sorhoz
+    }
 
 })
