@@ -10,15 +10,15 @@ const fieldellista = [{//létrehozzuk a mezők listáját
     fieldid: 'sikeres',//létrehozzuk a mező azonosítóját
     fieldlabel: 'sikeres'//létrehozzuk a mező címkéjét
 }];//létrehozzuk a mezők listáját
-const makeDiv = (className) => {//arroww functione seggíttségével hozzuk létre a divet
+const makeDiv1 = (className) => {//arroww functione seggíttségével hozzuk létre a divet
     const div = document.createElement('div');//létrehozzuk a divet
     div.className = className;//beállítjuk a class nevét
     return div;//visszaadjuk a divet
 }
 
-const containerDiv = makeDiv('container');//létrehozzuk a konténer divet
+const containerDiv = makeDiv1('container');//létrehozzuk a konténer divet
 document.body.appendChild(containerDiv);//hozzáadjuk a konténer divet a bodyhoz    
-const tableDiv = makeDiv('table');//létrehozzuk a táblázat divet
+const tableDiv = makeDiv1('table');//létrehozzuk a táblázat divet
 containerDiv.appendChild(tableDiv);//hozzáadjuk a táblázat divet a konténerhez
 
 const table = document.createElement('table');//létrehozzuk a táblázatot
@@ -37,7 +37,7 @@ for (const cellatartalom of cella) {//végigmegyünk a cellákon
 const tbody = document.createElement('tbody');//létrehozzuk a törzset
 table.appendChild(tbody);//hozzáadjuk a törzset a táblázathoz
 
-const formDiv = makeDiv('form');//létrehozzuk a form divet
+const formDiv = makeDiv1('form');//létrehozzuk a form divet
 containerDiv.appendChild(formDiv);//hozzáadjuk a form divet a konténerhez
 
 const simaform = document.createElement('form');//létrehozzuk a formot
@@ -45,7 +45,7 @@ formDiv.appendChild(simaform);//hozzáadjuk a formot a form divhez
 
 for (const field of fieldellista) {//végigmegyünk a mezők listáján
 
-    const fieldDiv = makeDiv('field');//létrehozzuk a mező divet
+    const fieldDiv = makeDiv1('field');//létrehozzuk a mező divet
     simaform.appendChild(fieldDiv);//hozzáadjuk a mező divet a formhoz
     const label = document.createElement('label');//létrehozzuk a címkét
     label.htmlFor = field.fieldid;//beállítjuk a címke azonosítóját

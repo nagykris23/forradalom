@@ -1,4 +1,15 @@
 const elvalaszto = document.createElement('hr');//létrehozzuk az elválasztó vonalat a sima és az oop között
 document.body.appendChild(elvalaszto);//hozzáadjuk az elválasztó vonalat a bodyhoz
+const fieldellistaoop = [{//létrehozzuk a mezők listáját
+    fieldid: 'forradalom',//létrehozzuk a mező azonosítóját 
+    fieldlabel: 'forradalom'//létrehozzuk a mező címkéjét
+},
+{
+    fieldid: 'evszam',//létrehozzuk a mező azonosítóját
+    fieldlabel: 'evszam'//létrehozzuk a mező címkéjét
+}, {
+    fieldid: 'sikeres',//létrehozzuk a mező azonosítóját
+    fieldlabel: 'sikeres'//létrehozzuk a mező címkéjét
+}];//létrehozzuk a mezők listáját
 const tableoop = new Table('table');//létrehozzuk a táblázatot
-const form = new  Form('form');//létrehozzuk a formot
+const formoop = new Form('form',fieldellistaoop);//létrehozzuk a formot
