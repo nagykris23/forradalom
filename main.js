@@ -1,4 +1,9 @@
 const array = [];//létrehozzuk az üres tömböt   
+const makeDiv1 = (className) => {//arroww functione seggíttségével hozzuk létre a divet
+    const div = document.createElement('div');//létrehozzuk a divet
+    div.className = className;//beállítjuk a class nevét
+    return div;//visszaadjuk a divet
+}
 const fieldellista = [{//létrehozzuk a mezők listáját
     fieldid: 'forradalom',//létrehozzuk a mező azonosítóját 
     fieldlabel: 'forradalom'//létrehozzuk a mező címkéjét
@@ -10,11 +15,6 @@ const fieldellista = [{//létrehozzuk a mezők listáját
     fieldid: 'sikeres',//létrehozzuk a mező azonosítóját
     fieldlabel: 'sikeres'//létrehozzuk a mező címkéjét
 }];//létrehozzuk a mezők listáját
-const makeDiv1 = (className) => {//arroww functione seggíttségével hozzuk létre a divet
-    const div = document.createElement('div');//létrehozzuk a divet
-    div.className = className;//beállítjuk a class nevét
-    return div;//visszaadjuk a divet
-}
 
 const containerDiv = makeDiv1('container');//létrehozzuk a konténer divet
 document.body.appendChild(containerDiv);//hozzáadjuk a konténer divet a bodyhoz    
@@ -77,15 +77,16 @@ for (const field of fieldellista) {//végigmegyünk a mezők listáján
 
 const formbutton = document.createElement('button');//létrehozzuk a gombot
 formbutton.textContent = 'hozzáadás';//beállítjuk a gomb szövegét
-formDiv.appendChild(formbutton);//hozzáadjuk a gombot a form divhez
-formbutton.addEventListener('submit', (event) => {//hozzáadunk egy eseménykezelőt a gombhoz
+simaform.appendChild(formbutton);//hozzáadjuk a gombot a form divhez
+simaform.addEventListener('submit', (event) => {//hozzáadunk egy eseménykezelőt a gombhoz
     event.preventDefault();//megakadályozzuk az alapértelmezett eseményt
 
     const ertekek = {};//létrehozzuk az üres objektumot 
-    const bemenetimezok = formDiv.querySelectorAll('input, select');//lekérjük az összes bemeneti mezőt
+    const bemenetimezok = event.target.querySelectorAll('input, select');//lekérjük az összes bemeneti mezőt
     for (const bemenit of bemenetimezok) {//végigmegyünk az összes bemeneti mezőn
         ertekek[bemenit.id] = bemenit.value;//beállítjuk az objektum értékeit
     }
+    array.push(ertekek);//hozzáadjuk az objektumot a tömbhöz
     const ujSor = document.createElement('tr');//létrehozzuk az új sort
     tbody.appendChild(ujSor);//hozzáadjuk az új sort a törzshöz
 

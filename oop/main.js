@@ -11,5 +11,6 @@ const fieldellistaoop = [{//létrehozzuk a mezők listáját
     fieldid: 'sikeres',//létrehozzuk a mező azonosítóját
     fieldlabel: 'sikeres'//létrehozzuk a mező címkéjét
 }];//létrehozzuk a mezők listáját
-const tableoop = new Table('table');//létrehozzuk a táblázatot
-const formoop = new Form('form',fieldellistaoop);//létrehozzuk a formot
+const manager = new Manager();//létrehozzuk a menedzsert
+const tableoop = new Table('table',manager);//létrehozzuk a táblázatot
+const formoop = new Form('form',fieldellistaoop,manager);//létrehozzuk a formot

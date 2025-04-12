@@ -5,11 +5,16 @@ function makeDiv(className) {//létrehozzuk a makeDiv függvényt
 }
 class Area {//létrehozzuk az Area osztályt
     #div;//létrehozzuk a privát változót
+    #manager;//létrehozzuk a manager privát változót
+    get manager() {//létrehozzuk a gettert
+        return this.#manager;//visszaadjuk a manager privát változót
+    }
     get div() {//létrehozzuk a gettert
         return this.#div;//visszaadjuk a privát változót
     }
 
-    constructor(className) {//létrehozzuk a konstruktorot
+    constructor(className, manager) {//létrehozzuk a konstruktorot
+        this.#manager = manager;//beállítjuk a manager privát változót
         const containerDiv = this.#getdivcontainer();//meghívjuk a #getdivcontainer függvényt
         this.#div = makeDiv(className);//létrehozzuk a divet
         this.#div.className = className;//beállítjuk a class nevét
@@ -28,9 +33,26 @@ class Area {//létrehozzuk az Area osztályt
 }
 
 class Table extends Area {//létrehozzuk a Table osztályt
-    constructor(cssClass) {//létrehozzuk a konstruktorot
-        super(cssClass);//meghívjuk a szülő osztály konstruktorát
-        this.#createtable()//meghívjuk a táblázat létrehozó metódust
+    constructor(cssClass, manager) {//létrehozzuk a konstruktorot
+        super(cssClass, manager);//meghívjuk a szülő osztály konstruktorát
+        const table = this.#createtable()//meghívjuk a táblázat létrehozó metódust
+
+
+        this.manager.setAddDatacCallback((data) => {//beállítjuk az addDatacCallback függvényt
+            const sor = document.createElement('tr');//létrehozzuk a sort
+            const forrcella = document.createElement('td');//létrehozzuk a cellát
+            forrcella.textContent = data.forradalom;//beállítjuk a cella tartalmát
+            sor.appendChild(forrcella);//hozzáadjuk a cellát a sorhoz
+
+            const evszamcella = document.createElement('td');//létrehozzuk a cellát
+            evszamcella.textContent = data.evszam;//beállítjuk a cella tartalmát
+            sor.appendChild(evszamcella);//hozzáadjuk a cellát a sorhoz
+
+            const sikerescella = document.createElement('td');//létrehozzuk a cellát
+            sikerescella.textContent = data.sikeres;//beállítjuk a cella tartalmát
+            sor.appendChild(sikerescella);//hozzáadjuk a cellát a sorhoz
+            table.appendChild(sor);//hozzáadjuk a sort a táblázathoz
+        })
     }
 
     #createtable() {//létrehozzuk a táblázatot
@@ -57,8 +79,8 @@ class Table extends Area {//létrehozzuk a Table osztályt
 }
 
 class Form extends Area {//létrehozzuk a Form osztályt
-    constructor(cssClass, fieldellistaoop) {//létrehozzuk a konstruktorot
-        super(cssClass);//meghívjuk a szülő osztály konstruktorát
+    constructor(cssClass, fieldellistaoop, manager) {//létrehozzuk a konstruktorot
+        super(cssClass, manager);//meghívjuk a szülő osztály konstruktorát
 
         const form = document.createElement('form');//létrehozzuk a formot
         this.div.appendChild(form);//hozzáadjuk a formot a divhez
@@ -101,5 +123,17 @@ class Form extends Area {//létrehozzuk a Form osztályt
         const gomb = document.createElement('button');//létrehozzuk a gombot
         gomb.textContent = 'hozzáadás';//beállítjuk a gomb szövegét
         form.appendChild(gomb);//hozzáadjuk a gombot a formhoz
+
+        form.addEventListener('submit', (event) => {//hozzáadunk egy eseményfigyelőt a formhoz
+            event.preventDefault();//megakadályozzuk az alapértelmezett viselkedést
+            const data = {};//létrehozzuk az adat objektumot
+            const inputs = form.querySelectorAll('input, select');//lekérjük az összes bemeneti mezőt és legördülő menüt
+            for (const input of inputs) {//végigmegyünk az összes bemeneti mezőn és legördülő menün
+                data[input.id] = input.value;//beállítjuk az adat objektum mezőit
+            }
+            const adat = new Adat(data.forradalom, data.evszam, data.sikeres);//létrehozzuk az adat objektumot
+            this.manager.addData(adat);//hozzáadjuk az adatot a managerhez
+
+        })
     }
 }
