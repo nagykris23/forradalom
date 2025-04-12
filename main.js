@@ -1,3 +1,15 @@
+const array = [];//létrehozzuk az üres tömböt   
+const fieldellista = [{//létrehozzuk a mezők listáját
+    fieldid: 'forradalom',//létrehozzuk a mező azonosítóját 
+    fieldlabel: 'forradalom'//létrehozzuk a mező címkéjét
+},
+{
+    fieldid: 'evszam',//létrehozzuk a mező azonosítóját
+    fieldlabel: 'evszam'//létrehozzuk a mező címkéjét
+}, {
+    fieldid: 'sikeres',//létrehozzuk a mező azonosítóját
+    fieldlabel: 'sikeres'//létrehozzuk a mező címkéjét
+}];//létrehozzuk a mezők listáját
 const makeDiv = (className) => {//arroww functione seggíttségével hozzuk létre a divet
     const div = document.createElement('div');//létrehozzuk a divet
     div.className = className;//beállítjuk a class nevét
@@ -30,17 +42,7 @@ containerDiv.appendChild(formDiv);//hozzáadjuk a form divet a konténerhez
 
 const simaform = document.createElement('form');//létrehozzuk a formot
 formDiv.appendChild(simaform);//hozzáadjuk a formot a form divhez
-const fieldellista = [{//létrehozzuk a mezők listáját
-    fieldid: 'forradalom',//létrehozzuk a mező azonosítóját
-    fieldlabel: 'forradalom'//létrehozzuk a mező címkéjét
-},
-{
-    fieldid: 'evszam',////létrehozzuk a mező azonosítóját
-    fieldlabel: 'evszam'////létrehozzuk a mező címkéjét
-}, {
-    fieldid: 'sikeres',////létrehozzuk a mező azonosítóját
-    fieldlabel: 'sikeres'////létrehozzuk a mező címkéjét
-}];//létrehozzuk a mezők listáját
+
 for (const field of fieldellista) {//végigmegyünk a mezők listáján
 
     const fieldDiv = makeDiv('field');//létrehozzuk a mező divet
@@ -50,9 +52,9 @@ for (const field of fieldellista) {//végigmegyünk a mezők listáján
     label.textContent = field.fieldlabel;//beállítjuk a címke tartalmát
     fieldDiv.appendChild(label);//hozzáadjuk a címkét a mező divhez 
 
-    let input = document.createElement('input');//létrehozzuk a bemeneti mezőt
-    input.id = field.fieldid;//beállítjuk a bemeneti mező azonosítóját
+
     fieldDiv.appendChild(document.createElement('br'));//hozzáadunk egy sortörést a mező divhez
+    let input;//létrehozzuk a bemeneti mezőt    
 
     if (field.fieldlabel === 'sikeres') {//ha a mező címkéje sikeres
         input = document.createElement('select');//létrehozzuk a legördülő menüt
@@ -72,6 +74,29 @@ for (const field of fieldellista) {//végigmegyünk a mezők listáján
     }
     fieldDiv.appendChild(input);//hozzáadjuk a bemeneti mezőt a mező divhez
 }
+
 const formbutton = document.createElement('button');//létrehozzuk a gombot
 formbutton.textContent = 'hozzáadás';//beállítjuk a gomb szövegét
-simaform.appendChild(formbutton);//hozzáadjuk a gombot a mező divhezs
+formDiv.appendChild(formbutton);//hozzáadjuk a gombot a form divhez
+formbutton.addEventListener('submit', (event) => {//hozzáadunk egy eseménykezelőt a gombhoz
+    event.preventDefault();//megakadályozzuk az alapértelmezett eseményt
+
+    const ertekek = {};//létrehozzuk az üres objektumot 
+    const bemenetimezok = formDiv.querySelectorAll('input, select');//lekérjük az összes bemeneti mezőt
+    for (const bemenit of bemenetimezok) {//végigmegyünk az összes bemeneti mezőn
+        ertekek[bemenit.id] = bemenit.value;//beállítjuk az objektum értékeit
+    }
+    const ujSor = document.createElement('tr');//létrehozzuk az új sort
+    tbody.appendChild(ujSor);//hozzáadjuk az új sort a törzshöz
+
+    const forrcella = document.createElement('td');//létrehozzuk a cellát
+    forrcella.textContent = ertekek.forradalom;//beállítjuk a cella tartalmát
+    ujSor.appendChild(forrcella);//hozzáadjuk a cellát az új sorhoz
+    const evszamcell = document.createElement('td');//létrehozzuk a cellát
+    evszamcell.textContent = ertekek.evszam;//beállítjuk a cella tartalmát
+    ujSor.appendChild(evszamcell);//hozzáadjuk a cellát az új sorhoz
+    const sikerescella = document.createElement('td');//létrehozzuk a cellát
+    sikerescella.textContent = ertekek.sikeres;//beállítjuk a cella tartalmát
+    ujSor.appendChild(sikerescella);//hozzáadjuk a cellát az új sorhoz
+
+})
