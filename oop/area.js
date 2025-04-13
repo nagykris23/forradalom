@@ -115,6 +115,31 @@ class Form extends Area {//létrehozzuk a Form osztályt
         })
     }
 }
+class Upload extends Area {//létrehozzuk az Upload osztályt
+    constructor(cssClass, manager) {//létrehozzuk a konstruktorot
+        super(cssClass, manager);//meghívjuk a szülő osztály konstruktorát
+        const fileInput = document.createElement('input');//létrehozzuk a fájl bemeneti mezőt
+        fileInput.id = 'fileinput';//beállítjuk a fájl bemeneti mező azonosítóját
+        fileInput.type = 'file';//beállítjuk a fájl típusát
+        this.div.appendChild(fileInput);//hozzáadjuk a fájl bemeneti mezőt a divhez
+
+        fileInput.addEventListener('change', (e) => {//hozzáadunk egy eseményfigyelőt a fájl bemeneti mezőhöz
+            const file = e.target.files[0];//lekérjük az első fájlt
+            const reader = new FileReader();//létrehozzuk a FileReader objektumot
+            reader.onload = (e) => {//amikor betöltődött a fájl
+                const lines = e.target.result.split('\n');//felosztjuk a fájlt sorokra
+                const removefejlec = lines.slice(1);//eltávolítjuk az első sort
+                for (const line of removefejlec) {//végigmegyünk a sorokon
+                    const  removehead = line.trim();//eltávolítjuk a felesleges szóközöket
+                    const data = removehead.split(';');//felosztjuk a sort pontosvesszővel
+                    const adatObj = new Adat(data[0], Number(data[1]), data[2]);//létrehozzuk az adat objektumot
+                    this.manager.addData(adatObj);//hozzáadjuk az adatot a managerhez
+                }
+            };
+            reader.readAsText(file);//beolvassuk a fájlt szövegként
+        });
+    }
+}
 
 class FormField {//létrehozzuk a FormField osztályt
     #id;//privát mező az azonosítóhoz
