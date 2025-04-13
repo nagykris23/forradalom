@@ -99,13 +99,19 @@ class Form extends Area {//létrehozzuk a Form osztályt
         form.addEventListener('submit', (event) => {//hozzáadunk egy eseményfigyelőt a formhoz
             event.preventDefault();//megakadályozzuk az alapértelmezett viselkedést
             const adat = {};//létrehozzuk az adat objektumot
-
+            let valid = true;//létrehozzuk a valid változót
             for (const field of this.#formFieldArray) {//végigmegyünk a mezőkön
+                field.error = '';//töröljük a hibaüzenetet
+                if (!field.value) {//ha az érték üres
+                    field.error = 'Kötelező megadni';//beállítjuk a hibaüzenetet
+                    valid = false;//beállítjuk a valid változót hamisra
+                }
                 adat[field.id] = field.value;//elmentjük az értékeket az objektumba
             }
-
-            const adatObj = new Adat(adat.forradalom, adat.evszam, adat.sikeres);//létrehozzuk az adat objektumot
+            if(valid){//ha a valid változó igaz
+            const adatObj = new Adat(adat.forradalom, Number(adat.evszam), adat.sikeres);//létrehozzuk az adat objektumot
             this.manager.addData(adatObj);//hozzáadjuk az adatot a managerhez
+            }
         })
     }
 }
