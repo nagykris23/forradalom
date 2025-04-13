@@ -117,5 +117,39 @@ simaform.addEventListener('submit', (event) => {//hozzáadunk egy eseménykezel�
         sikerescella.textContent = ertekek.sikeres;//beállítjuk a cella tartalmát
         ujSor.appendChild(sikerescella);//hozzáadjuk a cellát az új sorhoz
     }
-
-})
+}) 
+    const filebemenet = document.createElement('input');//létrehozzuk a fájl bemeneti mezőt
+    containerDiv.appendChild(filebemenet);//hozzáadjuk a fájl bemeneti mezőt a konténerhez
+    filebemenet.id = 'fileinput';//beállítjuk a fájl bemeneti mező azonosítóját
+    filebemenet.type = 'file';//beállítjuk a fájl bemeneti mező típusát
+    filebemenet.addEventListener('change', (e) => {//hozzáadunk egy eseménykezelőt a fájl bemeneti mezőhöz
+        const file = e.target.files[0];//lekérjük a fájlt
+        const fileReader = new FileReader();//létrehozzuk a fájl olvasót
+        fileReader.onload = () => {//hozzáadunk egy eseménykezelőt a fájl olvasóhoz
+            const filelines = fileReader.result.split('\n');//felosztjuk a fájl tartalmát sorokra
+            const removehead = filelines.slice(1);//eltávolítjuk az első sort
+            for (const line of removehead) {//végigmegyünk a sorokon
+                const trimline = line.trim();//eltávolítjuk a felesleges szóközöket
+                const mezo = trimline.split(';');//felosztjuk a sort mezőkre
+                const forr = {
+                    forradalom: mezo[0],//beállítjuk a mező értékét
+                    evszam: mezo[1],//beállítjuk a mező értékét
+                    sikeres: mezo[2]//beállítjuk a mező értékét
+                }
+                array.push(forr);//hozzáadjuk a mezőt a tömbhöz
+                const ujSor = document.createElement('tr');//létrehozzuk az új sort
+                tbody.appendChild(ujSor);//hozzáadjuk az új sort a törzshöz
+                const forrcella = document.createElement('td');//létrehozzuk a cellát
+                forrcella.textContent = forr.forradalom;//beállítjuk a cella tartalmát
+                ujSor.appendChild(forrcella);//hozzáadjuk a cellát az új sorhoz
+                const evszamcell = document.createElement('td');//létrehozzuk a cellát
+                evszamcell.textContent = forr.evszam;//beállítjuk a cella tartalmát
+                ujSor.appendChild(evszamcell);//hozzáadjuk a cellát az új sorhoz
+                const sikerescella = document.createElement('td');//létrehozzuk a cellát
+                sikerescella.textContent = forr.sikeres;//beállítjuk a cella tartalmát
+                ujSor.appendChild(sikerescella);//hozzáadjuk a cellát az új sorhoz
+                
+            }
+        }
+        fileReader.readAsText(file);//beolvassuk a fájlt szövegként
+    })
