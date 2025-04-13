@@ -37,7 +37,6 @@ class Table extends Area {//létrehozzuk a Table osztályt
         super(cssClass, manager);//meghívjuk a szülő osztály konstruktorát
         const table = this.#createtable()//meghívjuk a táblázat létrehozó metódust
 
-
         this.manager.setAddDatacCallback((data) => {//beállítjuk az addDatacCallback függvényt
             const sor = document.createElement('tr');//létrehozzuk a sort
             const forrcella = document.createElement('td');//létrehozzuk a cellát
@@ -79,45 +78,18 @@ class Table extends Area {//létrehozzuk a Table osztályt
 }
 
 class Form extends Area {//létrehozzuk a Form osztályt
+    #formFieldArray;//privát tömb a form mezőkhöz
     constructor(cssClass, fieldellistaoop, manager) {//létrehozzuk a konstruktorot
         super(cssClass, manager);//meghívjuk a szülő osztály konstruktorát
+        this.#formFieldArray = [];//inicializáljuk a mezők tömbjét
 
         const form = document.createElement('form');//létrehozzuk a formot
         this.div.appendChild(form);//hozzáadjuk a formot a divhez
 
         for (const fieldelem of fieldellistaoop) {//végigmegyünk a mezők listáján
-            const field = makeDiv('field');//létrehozzuk a mező divet
-            form.appendChild(field);//hozzáadjuk a mező divet a formhoz
-
-            const label = document.createElement('label');//létrehozzuk a címkét
-            label.htmlFor = fieldelem.fieldid;//beállítjuk a címke azonosítóját
-            label.textContent = fieldelem.fieldlabel;//beállítjuk a címke tartalmát
-            field.appendChild(label);//hozzáadjuk a címkét a mező divhez
-
-            field.appendChild(document.createElement('br'));//hozzáadunk egy sortörést a címke után
-
-            let input;
-            if (fieldelem.fieldid === 'sikeres') {//ha a mező azonosítója 'sikeres'
-                input = document.createElement('select');//létrehozzuk a legördülő menüt
-                input.id = fieldelem.fieldid;//beállítjuk a legördülő menü azonosítóját
-
-                const opcio1 = document.createElement('option');//létrehozzuk az első opciót
-                opcio1.value = 'igen';//beállítjuk az első opció értékét
-                opcio1.textContent = 'igen';//beállítjuk az első opció szövegét
-
-                const opcio2 = document.createElement('option');//létrehozzuk a második opciót
-                opcio2.value = 'nem';//beállítjuk a második opció értékét
-                opcio2.textContent = 'nem';//beállítjuk a második opció szövegét
-
-                input.appendChild(opcio1);//hozzáadjuk az első opciót a legördülő menühöz
-                input.appendChild(opcio2);//hozzáadjuk a második opciót a legördülő menühöz
-            } else {
-                input = document.createElement('input');//létrehozzuk a bemeneti mezőt
-                input.id = fieldelem.fieldid;//beállítjuk a bemeneti mező azonosítóját
-            }
-
-            field.appendChild(input);//hozzáadjuk a bemeneti mezőt a mező divhez
-            field.appendChild(document.createElement('br'));//hozzáadunk egy sortörést az input után
+            const formField = new FormField(fieldelem.fieldid, fieldelem.fieldlabel);//létrehozzuk a FormField objektumot
+            this.#formFieldArray.push(formField);//elmentjük a mezőt a tömbbe
+            form.appendChild(formField.getDiv());//hozzáadjuk a mezőt a formhoz
         }
 
         const gomb = document.createElement('button');//létrehozzuk a gombot
@@ -126,14 +98,75 @@ class Form extends Area {//létrehozzuk a Form osztályt
 
         form.addEventListener('submit', (event) => {//hozzáadunk egy eseményfigyelőt a formhoz
             event.preventDefault();//megakadályozzuk az alapértelmezett viselkedést
-            const data = {};//létrehozzuk az adat objektumot
-            const inputs = form.querySelectorAll('input, select');//lekérjük az összes bemeneti mezőt és legördülő menüt
-            for (const input of inputs) {//végigmegyünk az összes bemeneti mezőn és legördülő menün
-                data[input.id] = input.value;//beállítjuk az adat objektum mezőit
-            }
-            const adat = new Adat(data.forradalom, data.evszam, data.sikeres);//létrehozzuk az adat objektumot
-            this.manager.addData(adat);//hozzáadjuk az adatot a managerhez
+            const adat = {};//létrehozzuk az adat objektumot
 
+            for (const field of this.#formFieldArray) {//végigmegyünk a mezőkön
+                adat[field.id] = field.value;//elmentjük az értékeket az objektumba
+            }
+
+            const adatObj = new Adat(adat.forradalom, adat.evszam, adat.sikeres);//létrehozzuk az adat objektumot
+            this.manager.addData(adatObj);//hozzáadjuk az adatot a managerhez
         })
+    }
+}
+
+class FormField {//létrehozzuk a FormField osztályt
+    #id;//privát mező az azonosítóhoz
+    #inputElement;//privát mező az input elemhez
+    #labelElement;//privát mező a címkéhez
+    #errorElement;//privát mező a hibaüzenethez
+
+    get id() {//getter az id-hez
+        return this.#id;//visszaadja az id-t
+    }
+
+    get value() {//getter az input értékéhez
+        return this.#inputElement.value;//visszaadja az input értékét
+    }
+
+    set error(value) {//setter a hibaüzenethez
+        this.#errorElement.textContent = value;//beállítja a hibaüzenetet
+    }
+
+    constructor(id, labelContent) {//konstruktor
+        this.#id = id;//beállítjuk az id mezőt
+        this.#labelElement = document.createElement('label');//létrehozzuk a címkét
+        this.#labelElement.htmlFor = id;//beállítjuk a címke azonosítóját
+        this.#labelElement.textContent = labelContent;//beállítjuk a címke szövegét
+
+        if (id === 'sikeres') {//ha a mező a 'sikeres' mező
+            this.#inputElement = document.createElement('select');//legördülő menü
+            const option1 = document.createElement('option');//létrehozzuk az első opciót
+            option1.value = 'igen';//beállítjuk az első opció értékét
+            option1.textContent = 'igen';//beállítjuk az első opció szövegét
+
+            const option2 = document.createElement('option');////létrehozzuk a második opciót
+            option2.value = 'nem';////beállítjuk a második opció értékét
+            option2.textContent = 'nem';////beállítjuk a második opció szövegét
+
+            this.#inputElement.appendChild(option1);//hozzáadjuk az első opciót a legördülő menühöz
+            this.#inputElement.appendChild(option2);//hozzáadjuk a második opciót a legördülő menühöz
+        } else {
+            this.#inputElement = document.createElement('input');//sima input mező
+        }
+
+        this.#inputElement.id = id;//beállítjuk az input mező azonosítóját
+
+        this.#errorElement = document.createElement('span');//hibaüzenet span
+        this.#errorElement.className = 'error';//hibaüzenet class név
+    }
+
+    getDiv() {//visszaad egy divet, ami tartalmazza a mezőt
+        const div = makeDiv('field');//létrehozzuk a mező divet
+        const br1 = document.createElement('br');//új sor
+        const br2 = document.createElement('br');//új sor
+
+        div.appendChild(this.#labelElement);//hozzáadjuk a címkét a mezőhöz
+        div.appendChild(br1);//új sor
+        div.appendChild(this.#inputElement);//hozzáadjuk az input mezőt a mezőhöz
+        div.appendChild(br2);//új sor
+        div.appendChild(this.#errorElement);//hozzáadjuk a hibaüzenetet a mezőhöz
+
+        return div;//visszaadjuk a mező divet
     }
 }
