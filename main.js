@@ -153,3 +153,21 @@ simaform.addEventListener('submit', (event) => {//hozzáadunk egy eseménykezel�
         }
         fileReader.readAsText(file);//beolvassuk a fájlt szövegként
     })
+    const exportgomb = document.createElement('button');//létrehozzuk az export gombot
+    exportgomb.textContent = 'letöltés';//beállítjuk a gomb szövegét
+    containerDiv.appendChild(exportgomb);//hozzáadjuk a gombot a konténerhez
+    exportgomb.addEventListener('click', () => {//hozzáadunk egy eseménykezelőt a gombhoz
+        const link = document.createElement('a');//létrehozzuk a linket
+        const tartalomarray = ['forradalom;evszam;sikeres'];//létrehozzuk a fájl tartalmát
+        for (const elem of array) {//végigmegyünk a tömb elemein
+            tartalomarray.push(`${elem.forradalom};${elem.evszam};${elem.sikeres}`);//beállítjuk a fájl tartalmát
+         
+        }
+        const tartalom = tartalomarray.join('\n');//összefűzzük a fájl tartalmát
+        const file = new Blob([tartalom])//létrehozzuk a fájlt
+        link.href = URL.createObjectURL(file);//beállítjuk a link href értékét
+        link.download = 'adatok.csv';//beállítjuk a fájl nevét
+        link.click();//kattintunk a linkre
+        URL.revokeObjectURL(link.href);//eltávolítjuk a linket
+    })
+    
