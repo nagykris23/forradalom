@@ -108,14 +108,14 @@ class Form extends Area {//létrehozzuk a Form osztályt
                 }
                 adat[field.id] = field.value;//elmentjük az értékeket az objektumba
             }
-            if(valid){//ha a valid változó igaz
-            const adatObj = new Adat(adat.forradalom, Number(adat.evszam), adat.sikeres);//létrehozzuk az adat objektumot
-            this.manager.addData(adatObj);//hozzáadjuk az adatot a managerhez
+            if (valid) {//ha a valid változó igaz
+                const adatObj = new Adat(adat.forradalom, Number(adat.evszam), adat.sikeres);//létrehozzuk az adat objektumot
+                this.manager.addData(adatObj);//hozzáadjuk az adatot a managerhez
             }
         })
     }
 }
-class Upload extends Area {//létrehozzuk az Upload osztályt
+class UploadDownload extends Area {//létrehozzuk az Upload osztályt
     constructor(cssClass, manager) {//létrehozzuk a konstruktorot
         super(cssClass, manager);//meghívjuk a szülő osztály konstruktorát
         const fileInput = document.createElement('input');//létrehozzuk a fájl bemeneti mezőt
@@ -130,7 +130,7 @@ class Upload extends Area {//létrehozzuk az Upload osztályt
                 const lines = e.target.result.split('\n');//felosztjuk a fájlt sorokra
                 const removefejlec = lines.slice(1);//eltávolítjuk az első sort
                 for (const line of removefejlec) {//végigmegyünk a sorokon
-                    const  removehead = line.trim();//eltávolítjuk a felesleges szóközöket
+                    const removehead = line.trim();//eltávolítjuk a felesleges szóközöket
                     const data = removehead.split(';');//felosztjuk a sort pontosvesszővel
                     const adatObj = new Adat(data[0], Number(data[1]), data[2]);//létrehozzuk az adat objektumot
                     this.manager.addData(adatObj);//hozzáadjuk az adatot a managerhez
@@ -138,6 +138,19 @@ class Upload extends Area {//létrehozzuk az Upload osztályt
             };
             reader.readAsText(file);//beolvassuk a fájlt szövegként
         });
+        const exportButton = document.createElement('button');//létrehozzuk az export gombot
+        exportButton.textContent = 'Letöltés';//beállítjuk a gomb szövegét
+        this.div.appendChild(exportButton);//hozzáadjuk a gombot a divhez
+        exportButton.addEventListener('click', () => {//hozzáadunk egy eseményfigyelőt a gombhoz
+            const kapcs = document.createElement('a');//létrehozzuk a linket
+            const content = this.manager.generateExport()//lekérjük a manager export stringjét
+            const file = new Blob([content]);//létrehozzuk a fájlt a tartalommal
+            kapcs.href = URL.createObjectURL(file);//beállítjuk a link href-jét a fájlra
+            kapcs.download = 'adatok.csv';//beállítjuk a fájl nevét
+            kapcs.click();//kattintunk a linkre
+            URL.revokeObjectURL(kapcs.href);//felszabadítjuk a fájl URL-jét
+        })
+
     }
 }
 

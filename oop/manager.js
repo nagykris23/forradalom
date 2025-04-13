@@ -13,4 +13,11 @@ class Manager {
         this.#addDatacCallback(data)//visszahívja az addDatacCallback függvényt
       
     }
+    generateExport() {//generálja az exportot
+        const eredmeny = ['forradalom;evszam;sikeres']//létrehozza az eredményt
+        for (const pers of this.#array) {//végigmegy az arrayen
+            eredmeny.push(`${pers.forradalom};${pers.evszam};${pers.sikeres}`)//hozzáadja az elemet az eredményhez
+        }
+        return eredmeny.join('\n')//visszaadja az eredményt
+    }
 }

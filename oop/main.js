@@ -14,4 +14,4 @@ const fieldellistaoop = [{//létrehozzuk a mezők listáját
 const manager = new Manager();//létrehozzuk a menedzsert
 const tableoop = new Table('table',manager);//létrehozzuk a táblázatot
 const formoop = new Form('form',fieldellistaoop,manager);//létrehozzuk a formot
-const fileUpload = new Upload('fileupload',manager);//létrehozzuk a fájl feltöltőt
+const fileUpload = new UploadDownload('fileupload',manager);//létrehozzuk a fájl feltöltőt
