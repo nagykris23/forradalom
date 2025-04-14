@@ -26,94 +26,162 @@ const filter = (adatarray, callback) => {//létrehozzuk a szűrő függvényt
 
 }
 
-const containerDiv = makeDiv1('container');//létrehozzuk a konténer divet
-document.body.appendChild(containerDiv);//hozzáadjuk a konténer divet a bodyhoz    
-const tableDiv = makeDiv1('table');//létrehozzuk a táblázat divet
-containerDiv.appendChild(tableDiv);//hozzáadjuk a táblázat divet a konténerhez
+const cratetable =(containerDiv, callback) => {//létrehozzuk a táblázatot
+    const tableDiv = makeDiv1('table')////létrehozzuk a táblázat divet
+    containerDiv.appendChild(tableDiv);//hozzáadjuk a táblázat divet a konténerhez
 
-const table = document.createElement('table');//létrehozzuk a táblázatot
-tableDiv.appendChild(table);//hozzáadjuk a táblázatot a táblázat divhez
-const fejlec = document.createElement('thead');//létrehozzuk a fejlécet 
-table.appendChild(fejlec);//hozzáadjuk a fejlécet a táblázathoz
-const fejsor = document.createElement('tr');//létrehozzuk a fejléc sort
-fejlec.appendChild(fejsor);//hozzáadjuk a fejléc sort a fejléchez
-const cella = ['forradalom', 'evszam', 'sikeres'];//létrehozzuk a cellák tartalmát
+    const table = document.createElement('table');//létrehozzuk a táblázatot
+    tableDiv.appendChild(table);//hozzáadjuk a táblázatot a táblázat divhez
 
-for (const cellatartalom of cella) {//végigmegyünk a cellákon
-    const fejcell = document.createElement('th');//létrehozzuk a fejléc cellát
-    fejcell.innerHTML = cellatartalom;//beállítjuk a cella tartalmát
-    fejsor.appendChild(fejcell);//hozzáadjuk a fejléc cellát a fejléc sorhoz
-}
-const tbody = document.createElement('tbody');//létrehozzuk a törzset
-table.appendChild(tbody);//hozzáadjuk a törzset a táblázathoz
+    const thead = document.createElement('thead');//létrehozzuk a fejlécet
+    table.appendChild(thead);//hozzáadjuk a fejlécet a táblázathoz
 
-const formDiv = makeDiv1('form');//létrehozzuk a form divet
-containerDiv.appendChild(formDiv);//hozzáadjuk a form divet a konténerhez
+    const theadrow = document.createElement('tr');//létrehozzuk a fejléc sort   
+    thead.appendChild(theadrow);//hozzáadjuk a fejléc sort a fejléchez
 
-const simaform = document.createElement('form');//létrehozzuk a formot
-formDiv.appendChild(simaform);//hozzáadjuk a formot a form divhez
-
-for (const field of fieldellista) {//végigmegyünk a mezők listáján
-
-    const fieldDiv = makeDiv1('field');//létrehozzuk a mező divet
-    simaform.appendChild(fieldDiv);//hozzáadjuk a mező divet a formhoz
-    const label = document.createElement('label');//létrehozzuk a címkét
-    label.htmlFor = field.fieldid;//beállítjuk a címke azonosítóját
-    label.textContent = field.fieldlabel;//beállítjuk a címke tartalmát
-    fieldDiv.appendChild(label);//hozzáadjuk a címkét a mező divhez 
-
-
-    fieldDiv.appendChild(document.createElement('br'));//hozzáadunk egy sortörést a mező divhez
-    let input;//létrehozzuk a bemeneti mezőt    
-
-    if (field.fieldlabel === 'sikeres') {//ha a mező címkéje sikeres
-        input = document.createElement('select');//létrehozzuk a legördülő menüt
-        input.id = field.fieldid;//beállítjuk a legördülő menü azonosítóját
-        const opcio1 = document.createElement('option');//létrehozzuk az első opciót
-        opcio1.value = 'igen';//beállítjuk az első opció értékét
-        opcio1.innerText = 'igen';//beállítjuk az első opció szövegét
-        const opcio2 = document.createElement('option');//létrehozzuk a második opciót 
-        opcio2.value = 'nem';//beállítjuk a második opció értékét
-        opcio2.innerText = 'nem';//beállítjuk a második opció szövegét
-
-        input.appendChild(opcio1);//hozzáadjuk az első opciót a legördülő menühöz
-        input.appendChild(opcio2);//hozzáadjuk a második opciót a legördülő menühöz
-    } else {
-        input = document.createElement('input');//létrehozzuk a bemeneti mezőt
-        input.id = field.fieldid;//beállítjuk a bemeneti mező azonosítóját
-    }
-    fieldDiv.appendChild(input);//hozzáadjuk a bemeneti mezőt a mező divhez
-    fieldDiv.appendChild(document.createElement('br'));//hozzáadunk egy sortörést a mező divhez
-    const errorspan = document.createElement('span');//létrehozzuk a hiba üzenetet
-    errorspan.className = 'error';//beállítjuk a hiba üzenet class nevét
-    fieldDiv.appendChild(errorspan);//hozzáadjuk a hiba üzenetet a formhoz
-}
-
-const formbutton = document.createElement('button');//létrehozzuk a gombot
-formbutton.textContent = 'hozzáadás';//beállítjuk a gomb szövegét
-simaform.appendChild(formbutton);//hozzáadjuk a gombot a form divhez
-simaform.addEventListener('submit', (event) => {//hozzáadunk egy eseménykezelőt a gombhoz
-    event.preventDefault();//megakadályozzuk az alapértelmezett eseményt
-
-    const ertekek = {};//létrehozzuk az üres objektumot 
-    const bemenetimezok = event.target.querySelectorAll('input, select');//lekérjük az összes bemeneti mezőt
-    let valid = true;//beállítjuk a valid változót igazra
-    for (const bemenit of bemenetimezok) {//végigmegyünk az összes bemeneti mezőn
-        const errorDiv = bemenit.parentElement.querySelector('.error');//lekérjük a hiba üzenetet
-        if (!errorDiv) {//ha a hiba üzenet nem létezik
-            console.error('nincs errordield');//kiírjuk a hiba üzenetet a konzolra
-            return;//visszatérünk
-        }
-        errorDiv.textContent = '';//kiürítjük a hiba üzenetet
-        if (bemenit.value === '') {//ha a bemeneti mező üres
-            errorDiv.textContent = 'Kötelező megadni';//beállítjuk a hiba üzenetet
-            valid = false;//beállítjuk a valid változót hamisra
-        }
-        ertekek[bemenit.id] = bemenit.value;//beállítjuk az objektum értékeit
-    }
-    if (valid) //ha a valid változó igaz
+    const theadcell = ['forradalom', 'evszam', 'sikeres'];//létrehozzuk a fejléc cellákat   
+    for(const cellatartalom of theadcell)//végigmegyünk a fejléc cellákon
     {
-        array.push(ertekek);//hozzáadjuk az objektumot a tömbhöz
+        const cella = document.createElement('th');//létrehozzuk a fejléc cellát
+        cella.textContent = cellatartalom;//beállítjuk a fejléc cella tartalmát
+        theadrow.appendChild(cella);//hozzáadjuk a fejléc cellát a fejléc sorhoz
+    }
+    const tbody = document.createElement('tbody');//létrehozzuk a törzset
+    table.appendChild(tbody);//hozzáadjuk a törzset a táblázathoz
+    callback(tbody);//visszaadjuk a törzset
+
+
+}
+const feltotles = (tbody, containerDiv,array) => {//létrehozzuk a feltöltés függvényt
+    const fileupinput = document.createElement('input');//létrehozzuk a fájl feltöltő mezőt
+    containerDiv.appendChild(fileupinput);//hozzáadjuk a fájl feltöltő mezőt a konténerhez
+    fileupinput.id = 'fileupinput';//beállítjuk a fájl feltöltő mező azonosítóját
+    fileupinput.type = 'file';//beállítjuk a fájl feltöltő mező típusát
+    fileupinput.addEventListener('change', (e) => {//hozzáadunk egy eseménykezelőt a fájl feltöltő mezőhöz
+        const valasztottfile = e.target.files[0];//lekérjük a fájlt
+        const fileReader = new FileReader();//létrehozzuk a fájl olvasót
+
+        fileReader.onload = () => {//hozzáadunk egy eseménykezelőt a fájl olvasóhoz
+            const filetartalom = fileReader.result.split('\n');//felosztjuk a fájl tartalmát sorokra
+            const removehead = filetartalom.slice(1);//eltávolítjuk az első sort
+            for(const sor of removehead){
+                const trimline = sor.trim();//eltávolítjuk a felesleges szóközöket
+                const mezo = trimline.split(';');//felosztjuk a sort mezőkre
+                const forradalom = {
+                    forradalom: mezo[0],//beállítjuk a mező értékét
+                    evszam: mezo[1],//beállítjuk a mező értékét
+                    sikeres: mezo[2]//beállítjuk a mező értékét
+                }
+                array.push(forradalom);//hozzáadjuk a mezőt a tömbhöz
+                const ujSor = document.createElement('tr');//létrehozzuk az új sort
+                tbody.appendChild(ujSor);//hozzáadjuk az új sort a törzshöz
+                const forradalomcell = document.createElement('td');//létrehozzuk a cellát
+                forradalomcell.textContent = forradalom.forradalom;//beállítjuk a cella tartalmát
+                ujSor.appendChild(forradalomcell);//hozzáadjuk a cellát az új sorhoz
+                const evszamcell = document.createElement('td');//létrehozzuk a cellát
+                evszamcell.textContent = forradalom.evszam;//beállítjuk a cella tartalmát
+                ujSor.appendChild(evszamcell);//hozzáadjuk a cellát az új sorhoz
+                const sikerescella = document.createElement('td');//létrehozzuk a cellát
+                sikerescella.textContent = forradalom.sikeres;//beállítjuk a cella tartalmát
+                ujSor.appendChild(sikerescella);//hozzáadjuk a cellát az új sorhoz
+
+            }
+        }
+            fileReader.readAsText(valasztottfile);//beolvassuk a fájlt szövegként   
+    })
+    
+}
+const creatform =(tbody, containerDiv,array ) => {//létrehozzuk a formot
+    const formdiv = makeDiv1('formdiv');//létrehozzuk a form divet
+
+    const form = document.createElement('form');//létrehozzuk a formot
+    formdiv.appendChild(form);//hozzáadjuk a formot a form divhez
+
+    const felement= [{
+        fieldid: 'forradalom',//létrehozzuk a mező azonosítóját
+        fieldlabel: 'forradalom'//létrehozzuk a mező címkéjét
+    },
+    {
+        fieldid: 'evszam',//létrehozzuk a mező azonosítóját
+        fieldlabel: 'evszam'//létrehozzuk a mező címkéjét
+    }, {
+        fieldid: 'sikeres',//létrehozzuk a mező azonosítóját
+        fieldlabel: 'sikeres'//létrehozzuk a mező címkéjét
+    }];//létrehozzuk a mezők listáját
+    for (const elem of felement) {//végigmegyünk a mezők listáján
+       const field = makeDiv1('field');//létrehozzuk a mezőt
+           
+            form.appendChild(field);//hozzáadjuk a mezőt a formhoz
+    
+            const label = document.createElement('label');//létrehozzuk a címkét
+            label.htmlFor = elem.fieldid;//beállítjuk a címke azonosítóját
+            label.textContent = elem.fieldlabel;//beállítjuk a címke tartalmát
+            field.appendChild(label);//hozzáadjuk a címkét a mezőhöz
+
+            field.appendChild(document.createElement('br'));//hozzáadunk egy sortörést a mezőhöz
+            if(elem.fieldid === 'sikeres'){//ha a mező azonosítója sikeres
+                bemenet = document.createElement('select');//létrehozzuk a legördülő menüt
+                bemenet.id = elem.fieldid;//beállítjuk a mező azonosítóját
+
+                const opcioigen = document.createElement('option');//létrehozzuk az opciót
+                opcioigen.value = 'igen';//beállítjuk az opció értékét
+                opcioigen.innerText = 'igen';//beállítjuk az opció szövegét
+
+                const opcionem = document.createElement('option');//létrehozzuk az opciót
+                opcionem.value = 'nem';//beállítjuk az opció értékét
+                opcionem.innerText = 'nem';//beállítjuk az opció szövegét
+                
+                bemenet.appendChild(opcioigen);//hozzáadjuk az opciót a legördülő menühöz
+                bemenet.appendChild(opcionem);//hozzáadjuk az opciót a legördülő menühöz
+            }
+            else{////ha a mező azonosítója nem sikeres
+                bemenet = document.createElement('input');//létrehozzuk a bemeneti mezőt
+                bemenet.id = elem.fieldid;//beállítjuk a mező azonosítóját
+                
+            }
+            field.appendChild(bemenet);//hozzáadjuk a bemeneti mezőt a mezőhöz
+
+            field.appendChild(document.createElement('br'));//hozzáadunk egy sortörést a mezőhöz
+            const errorspan = document.createElement('span');//létrehozzuk a hiba üzenetet
+            errorspan.className = 'error';//beállítjuk a hiba üzenet osztályát
+            field.appendChild(errorspan);//hozzáadjuk a hiba üzenetet a mezőhöz
+
+    }
+    const button = document.createElement('button');//létrehozzuk a gombot
+    button.textContent = 'hozzaadas';//beállítjuk a gomb szövegét
+    form.appendChild(button);//hozzáadjuk a gombot a formhoz
+
+    form.addEventListener('submit', (e) => {//hozzáadunk egy eseménykezelőt a formhoz
+        e.preventDefault();//megakadályozzuk az alapértelmezett eseményt
+        const ertekek = {};//létrehozzuk az üres objektumot
+        const bemenetiMezok = e.target.querySelectorAll('input, select');//lekérjük a bemeneti mezőket
+        let valid = true;//beállítjuk a valid változót igazra
+
+        for (const mezok of bemenetiMezok) {//végigmegyünk a bemeneti mezőkön
+            const errormezo = mezok.parentElement.querySelector('.error');//lekérjük a hiba üzenetet
+            if(!errormezo){//ha nincs hiba üzenet
+                console.log('nincs hiba üzenet');//kiírjuk a konzolra
+                return;//visszatérünk
+
+            }
+            errormezo.textContent = '';//kiürítjük a hiba üzenetet
+            if (mezok.value === '') {//ha a mező üres
+                errormezo.textContent = 'Kötelező megadni';//beállítjuk a hiba üzenetet
+                valid = false;//beállítjuk a valid változót hamisra
+            }
+            ertekek[mezok.id] = mezok.value;//beállítjuk az objektum értékét
+        }
+        if(valid){//ha a valid változó igaz
+            array.push(ertekek);//hozzáadjuk az objektumot a tömbhöz
+            sorhozzaadas(tbody, ertekek);//hozzáadjuk az új sort a táblázathoz
+    }
+
+})
+    containerDiv.appendChild(formdiv);//hozzáadjuk a form divet a konténerhez
+}
+
+
+const sorhozzaadas = (tbody, ertekek) => {//létrehozzuk a sor hozzáadás függvényt
         const ujSor = document.createElement('tr');//létrehozzuk az új sort
         tbody.appendChild(ujSor);//hozzáadjuk az új sort a törzshöz
 
@@ -126,134 +194,108 @@ simaform.addEventListener('submit', (event) => {//hozzáadunk egy eseménykezel�
         const sikerescella = document.createElement('td');//létrehozzuk a cellát
         sikerescella.textContent = ertekek.sikeres;//beállítjuk a cella tartalmát
         ujSor.appendChild(sikerescella);//hozzáadjuk a cellát az új sorhoz
+}
+const letoltes = (containerDiv,array) => {//létrehozzuk a letöltés függvényt
+    const letoltesgomb = document.createElement('button');//létrehozzuk a letöltés gombot
+    letoltesgomb.textContent = 'letoltes';//beállítjuk a gomb szövegét
+    containerDiv.appendChild(letoltesgomb);//hozzáadjuk a gombot a konténerhez
+
+    letoltesgomb.addEventListener('click', () => {//hozzáadunk egy eseménykezelőt a gombhoz
+        const link = document.createElement('a');//létrehozzuk a linket
+
+        const tartalom =['forradalom;evszam;sikeres'];//létrehozzuk a tartalmat
+        for (const adat of array) {//végigmegyünk a tömb elemein
+            tartalom.push(`${adat.forradalom};${adat.evszam};${adat.sikeres}`);//hozzáadjuk az elemet a tartalomhoz
+       
+        }
+        const fileTartalom = tartalom.join('\n');//összefűzzük a tartalmat
+        const file = new Blob([fileTartalom]);//létrehozzuk a fájlt
+
+        link.href = URL.createObjectURL(file);//beállítjuk a link href értékét
+        link.download = 'forradalom.csv';//beállítjuk a letöltési nevet
+        link.click();//kattintunk a linkre
+        URL.revokeObjectURL(link.href);//eltávolítjuk a linket
+    });
+}
+
+const formSzures = (containerDiv,tbody, array) => {//létrehozzuk a form szűrés függvényt
+    const formdiv = makeDiv1('formdiv');//létrehozzuk a form divet
+    containerDiv.appendChild(formdiv);//hozzáadjuk a form divet a konténerhez
+
+    const form = document.createElement('form');//létrehozzuk a formot
+    formdiv.appendChild(form);//hozzáadjuk a formot a form divhez
+
+    const fselect = document.createElement('select');//létrehozzuk a legördülő menüt
+    form.appendChild(fselect);//hozzáadjuk a legördülő menüt a formhoz
+
+    const opciok =[
+    {
+        fieldid: '',//létrehozzuk a mező azonosítóját
+        fieldlabel: 'valassz'//létrehozzuk a mező címkéjét
+    },
+    {
+        fieldid: 'forradalom',//létrehozzuk a mező azonosítóját
+        fieldlabel: 'forradalom'//létrehozzuk a mező címkéjét
+    },
+    {
+        fieldid: 'evszam',//létrehozzuk a mező azonosítóját
+        fieldlabel: 'evszam'//létrehozzuk a mező címkéjét
+    }, {
+        fieldid: 'sikeres',//létrehozzuk a mező azonosítóját
+        fieldlabel: 'sikeres'//létrehozzuk a mező címkéjét
+    }]
+    for(const opcio of opciok)//végigmegyünk az opciókon
+    {
+        const opcioelem = document.createElement('option');//létrehozzuk az opciót
+        opcioelem.value = opcio.fieldid;//beállítjuk az opció értékét
+        opcioelem.innerText = opcio.fieldlabel;//beállítjuk az opció szövegét
+        fselect.appendChild(opcioelem);//hozzáadjuk az opciót a legördülő menühöz
+       
     }
-})
-const filebemenet = document.createElement('input');//létrehozzuk a fájl bemeneti mezőt
-containerDiv.appendChild(filebemenet);//hozzáadjuk a fájl bemeneti mezőt a konténerhez
-filebemenet.id = 'fileinput';//beállítjuk a fájl bemeneti mező azonosítóját
-filebemenet.type = 'file';//beállítjuk a fájl bemeneti mező típusát
-filebemenet.addEventListener('change', (e) => {//hozzáadunk egy eseménykezelőt a fájl bemeneti mezőhöz
-    const file = e.target.files[0];//lekérjük a fájlt
-    const fileReader = new FileReader();//létrehozzuk a fájl olvasót
-    fileReader.onload = () => {//hozzáadunk egy eseménykezelőt a fájl olvasóhoz
-        const filelines = fileReader.result.split('\n');//felosztjuk a fájl tartalmát sorokra
-        const removehead = filelines.slice(1);//eltávolítjuk az első sort
-        for (const line of removehead) {//végigmegyünk a sorokon
-            const trimline = line.trim();//eltávolítjuk a felesleges szóközöket
-            const mezo = trimline.split(';');//felosztjuk a sort mezőkre
-            const forr = {
-                forradalom: mezo[0],//beállítjuk a mező értékét
-                evszam: mezo[1],//beállítjuk a mező értékét
-                sikeres: mezo[2]//beállítjuk a mező értékét
-            }
-            array.push(forr);//hozzáadjuk a mezőt a tömbhöz
-            const ujSor = document.createElement('tr');//létrehozzuk az új sort
-            tbody.appendChild(ujSor);//hozzáadjuk az új sort a törzshöz
-            const forrcella = document.createElement('td');//létrehozzuk a cellát
-            forrcella.textContent = forr.forradalom;//beállítjuk a cella tartalmát
-            ujSor.appendChild(forrcella);//hozzáadjuk a cellát az új sorhoz
-            const evszamcell = document.createElement('td');//létrehozzuk a cellát
-            evszamcell.textContent = forr.evszam;//beállítjuk a cella tartalmát
-            ujSor.appendChild(evszamcell);//hozzáadjuk a cellát az új sorhoz
-            const sikerescella = document.createElement('td');//létrehozzuk a cellát
-            sikerescella.textContent = forr.sikeres;//beállítjuk a cella tartalmát
-            ujSor.appendChild(sikerescella);//hozzáadjuk a cellát az új sorhoz
+    const input = document.createElement('input');//létrehozzuk a bemeneti mezőt
+    input.id = 'szuresinput';//beállítjuk a mező azonosítóját
+    form.appendChild(input);//hozzáadjuk a bemeneti mezőt a formhoz
+
+    const button = document.createElement('button');//létrehozzuk a gombot
+    button.innerText = 'szures';//beállítjuk a gomb szövegét
+    form.appendChild(button);//hozzáadjuk a gombot a formhoz
+
+    form.addEventListener('submit', (e) => {//hozzáadunk egy eseménykezelőt a formhoz
+        e.preventDefault();//megakadályozzuk az alapértelmezett eseményt
+
+        const szuresinput =  e.target.querySelector('#szuresinput');//lekérjük a bemeneti mezőt
+        const szuresselect = e.target.querySelector('select');//lekérjük a legördülő menüt
+
+        const filterdarray = filter(array, (elem) => {//szűrjük a tömböt
+            const field = szuresselect.value;//lekérjük a mező értékét
+            if(field === '') return true;//ha a mező üres
+            return elem[field] === szuresinput.value;//visszaadjuk az elemet
+        });
+        tbody.innerHTML = '';//kiürítjük a törzset
+
+        for(const adat of filterdarray)//végigmegyünk a szűrt tömb elemein
+        {
+            sorhozzaadas(tbody, adat);//hozzáadjuk az új sort a táblázathoz
 
         }
-    }
-    fileReader.readAsText(file);//beolvassuk a fájlt szövegként
-})
-const exportgomb = document.createElement('button');//létrehozzuk az export gombot
-exportgomb.textContent = 'letöltés';//beállítjuk a gomb szövegét
-containerDiv.appendChild(exportgomb);//hozzáadjuk a gombot a konténerhez
-exportgomb.addEventListener('click', () => {//hozzáadunk egy eseménykezelőt a gombhoz
-    const link = document.createElement('a');//létrehozzuk a linket
-    const tartalomarray = ['forradalom;evszam;sikeres'];//létrehozzuk a fájl tartalmát
-    for (const elem of array) {//végigmegyünk a tömb elemein
-        tartalomarray.push(`${elem.forradalom};${elem.evszam};${elem.sikeres}`);//beállítjuk a fájl tartalmát
 
-    }
-    const tartalom = tartalomarray.join('\n');//összefűzzük a fájl tartalmát
-    const file = new Blob([tartalom])//létrehozzuk a fájlt
-    link.href = URL.createObjectURL(file);//beállítjuk a link href értékét
-    link.download = 'adatok.csv';//beállítjuk a fájl nevét
-    link.click();//kattintunk a linkre
-    URL.revokeObjectURL(link.href);//eltávolítjuk a linket
-})
-
-const filterDiv = makeDiv1('filterForm');//létrehozzuk a szűrő divet
-containerDiv.appendChild(filterDiv);//hozzáadjuk a szűrő divet a konténerhez
-
-const formfilter = document.createElement('form');//létrehozzuk a szűrő formot
-filterDiv.appendChild(formfilter);//hozzáadjuk a szűrő formot a szűrő divhez
-
-const filterselect = document.createElement('select');//létrehozzuk a szűrő legördülő menüt
-formfilter.appendChild(filterselect);//hozzáadjuk a szűrő legördülő menüt a szűrő formhoz
-
-const option = [//létrehozzuk az opciókat
-    {
-        value: '',////beállítjuk az opció értékét
-        innerText: 'válasz mezőt'//létrehozzuk az opciót
-    },
-    {
-        value: 'forradalom',//beállítjuk az opció értékét
-        innerText: 'forradalom'//létrehozzuk az opciót
-    },
-    {
-        value: 'evszam',//beállítjuk az opció értékét
-        innerText: 'evszam'//létrehozzuk az opciót
-    },
-    {
-        value: 'sikeres',//beállítjuk az opció értékét
-        innerText: 'sikeres'//létrehozzuk az opciót
-    }
-]
-for (const lehetoseg of option) {//végigmegyünk az opciókon
-    const opcio = document.createElement('option');//létrehozzuk az opciót
-    opcio.value = lehetoseg.value;//beállítjuk az opció értékét
-    opcio.innerText = lehetoseg.innerText;//beállítjuk az opció szövegét
-    filterselect.appendChild(opcio);//hozzáadjuk az opciót a legördülő menühöz
+    });
 }
-const bemenet = document.createElement('input');//létrehozzuk a bemeneti mezőt
-bemenet.id = 'filterinput';//beállítjuk a bemeneti mező azonosítóját
-formfilter.appendChild(bemenet);//hozzáadjuk a bemeneti mezőt a szűrő formhoz
+const containerDiv = makeDiv1('container');//létrehozzuk a konténert
+document.body.appendChild(containerDiv);//hozzáadjuk a konténert a bodyhoz
+cratetable(containerDiv, (tbody) => {//létrehozzuk a táblázatot
+    creatform(tbody, containerDiv, array);//létrehozzuk a formot
+    feltotles(tbody, containerDiv, array);//feltöltjük a táblázatot
+    letoltes(containerDiv, array);//létrehozzuk a letöltés gombot
+    formSzures(containerDiv, tbody, array);//létrehozzuk a szűrés formot
+});
 
-const filterbutton = document.createElement('button');//létrehozzuk a szűrő gombot
-filterbutton.innerText = 'szűrés';//beállítjuk a gomb szövegét
-formfilter.appendChild(filterbutton);//hozzáadjuk a szűrő gombot a szűrő formhoz
 
 
 
-formfilter.addEventListener('submit', (event) => {//hozzáadunk egy eseménykezelőt a szűrő formhoz
-    event.preventDefault();//megakadályozzuk az alapértelmezett eseményt
-    const filterbemenet = event.target.querySelector('#filterinput');//lekérjük a szűrő bemeneti mezőt
-    const filterselect = event.target.querySelector('select');//lekérjük a szűrő legördülő menüt
 
-    const filterarray = filter(array, (elem) => {//létrehozzuk a szűrő tömböt
-        const field = filterselect.value;//lekérjük a szűrő mezőt
-        if (field === '') return true;//visszaadjuk az elemet
-        
-        return elem[field] === filterbemenet.value;//visszaadjuk az elemet
-    })
-    tbody.innerHTML = '';//kiürítjük a törzset
-    for (const adat of filterarray) {
-        const tableRow = document.createElement('tr');//létrehozzuk az új sort
-        tbody.appendChild(tableRow);//hozzáadjuk az új sort a törzshöz
 
-        const forradalomcell = document.createElement('td');//létrehozzuk a cellát
-        forradalomcell.textContent = adat.forradalom;//beállítjuk a cella tartalmát
-        tableRow.appendChild(forradalomcell);//hozzáadjuk a cellát az új sorhoz
 
-        const evszamcell = document.createElement('td');//létrehozzuk a cellát
-        evszamcell.textContent = adat.evszam;//beállítjuk a cella tartalmát
-        tableRow.appendChild(evszamcell);//hozzáadjuk a cellát az új sorhoz
-
-        const sikerescella = document.createElement('td');//létrehozzuk a cellát
-        sikerescella.textContent = adat.sikeres;//beállítjuk a cella tartalmát
-        tableRow.appendChild(sikerescella);//hozzáadjuk a cellát az új sorhoz
-
-    }
-})
 
 
 
