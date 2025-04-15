@@ -35,24 +35,36 @@ class Area {//létrehozzuk az Area osztályt
 class Table extends Area {//létrehozzuk a Table osztályt
     constructor(cssClass, manager) {//létrehozzuk a konstruktorot
         super(cssClass, manager);//meghívjuk a szülő osztály konstruktorát
-        const table = this.#createtable()//meghívjuk a táblázat létrehozó metódust
+        const tbody = this.#createtable()//meghívjuk a táblázat létrehozó metódust
 
         this.manager.setAddDatacCallback((data) => {//beállítjuk az addDatacCallback függvényt
-            const sor = document.createElement('tr');//létrehozzuk a sort
-            const forrcella = document.createElement('td');//létrehozzuk a cellát
-            forrcella.textContent = data.forradalom;//beállítjuk a cella tartalmát
-            sor.appendChild(forrcella);//hozzáadjuk a cellát a sorhoz
-
-            const evszamcella = document.createElement('td');//létrehozzuk a cellát
-            evszamcella.textContent = data.evszam;//beállítjuk a cella tartalmát
-            sor.appendChild(evszamcella);//hozzáadjuk a cellát a sorhoz
-
-            const sikerescella = document.createElement('td');//létrehozzuk a cellát
-            sikerescella.textContent = data.sikeres;//beállítjuk a cella tartalmát
-            sor.appendChild(sikerescella);//hozzáadjuk a cellát a sorhoz
-            table.appendChild(sor);//hozzáadjuk a sort a táblázathoz
+            this.#addRow(tbody, data);//meghívjuk a #addRow függvényt
         })
+        this.manager.setRenderCallback((array) => {//beállítjuk a renderCallback függvényt
+            tbody.innerHTML = '';//töröljük a tbody tartalmát
+            for (const data of array) {//végigmegyünk az arrayen
+                this.#addRow(tbody, data);//meghívjuk a #addRow függvényt
+            }
+        })
+      
     }
+    #addRow(tbody, data) {//létrehozzuk a #addRow függvényt
+        const tbodyRow = document.createElement('tr');//létrehozzuk a tbody sort
+        tbody.appendChild(tbodyRow);//hozzáadjuk a tbody sort a tbodyhoz
+
+        const forradalomcella = document.createElement('td');//létrehozzuk a forradalom cellát
+        forradalomcella.textContent = data.forradalom;//beállítjuk a forradalom cella tartalmát
+        tbodyRow.appendChild(forradalomcella);//hozzáadjuk a forradalom cellát a tbody sorhoz
+
+        const evszamcella = document.createElement('td');//létrehozzuk az evszam cellát
+        evszamcella.textContent = data.evszam;//beállítjuk az evszam cella tartalmát
+        tbodyRow.appendChild(evszamcella);//hozzáadjuk az evszam cellát a tbody sorhoz
+
+        const sikerescella = document.createElement('td');//létrehozzuk a sikeres cellát
+        sikerescella.textContent = data.sikeres////beállítjuk a sikeres cella tartalmát
+        tbodyRow.appendChild(sikerescella);//hozzáadjuk a sikeres cellát a tbody sorhoz
+    }
+
 
     #createtable() {//létrehozzuk a táblázatot
         const table = document.createElement('table');//létrehozzuk a táblázatot

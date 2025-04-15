@@ -15,3 +15,4 @@ const manager = new Manager();//létrehozzuk a menedzsert
 const tableoop = new Table('table',manager);//létrehozzuk a táblázatot
 const formoop = new Form('form',fieldellistaoop,manager);//létrehozzuk a formot
 const fileUpload = new UploadDownload('fileupload',manager);//létrehozzuk a fájl feltöltőt
+const filteroop = new FormFilter('filter',manager);//létrehozzuk a szűrőt
