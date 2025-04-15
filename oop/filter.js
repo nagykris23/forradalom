@@ -1,4 +1,10 @@
+
 class FormFilter extends Area {//létrehozzuk a FormFilter osztályt
+    /**
+     * 
+     * @param {string} cssClass  css osztály neve amelyet beállítunk 
+     * @param {Manager} manager  manager amelyet beállítunk 
+     */
     constructor(cssClass, manager) {//létrehozzuk a konstruktorot
         super(cssClass, manager);//meghívjuk a szülő osztály konstruktorát
         const form = document.createElement('form');//létrehozzuk a formot
@@ -23,8 +29,7 @@ class FormFilter extends Area {//létrehozzuk a FormFilter osztályt
         input.id = 'inputfilter';//beállítjuk a szövegmező azonosítóját
         form.appendChild(input);//hozzáadjuk a szövegmezőt a formhoz
 
-        const gomb = document.createElement('button');//létrehozzuk a gombot
-        gomb.innerText = 'szűrés';//beállítjuk a gomb szövegét
+        const gomb = this.gombletrehozas('Szűrés');//létrehozzuk a gombot
         form.appendChild(gomb);//hozzáadjuk a gombot a formhoz
 
         form.addEventListener('submit', (e) => {//hozzáadunk egy eseményfigyelőt a formhoz

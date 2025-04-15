@@ -1,14 +1,21 @@
-const fieldellista = [{//létrehozzuk a mezők listáját
-    fieldid: 'forradalom',//létrehozzuk a mező azonosítóját 
-    fieldlabel: 'forradalom'//létrehozzuk a mező címkéjét
-},
-{
-    fieldid: 'evszam',//létrehozzuk a mező azonosítóját
-    fieldlabel: 'evszam'//létrehozzuk a mező címkéjét
-}, {
-    fieldid: 'sikeres',//létrehozzuk a mező azonosítóját
-    fieldlabel: 'sikeres'//létrehozzuk a mező címkéjét
-}];//létrehozzuk a mezők listáját
+/**
+ * 
+ * @param {string} className div osztálya amelyet létrehozunk
+ * @returns {HTMLElement} létrehozott div elem
+ */
+const makeDiv1 = (className) => {//arroww functione seggíttségével hozzuk létre a divet
+    const div = document.createElement('div');//létrehozzuk a divet
+    div.className = className;//beállítjuk a class nevét
+    return div;//visszaadjuk a divet
+}
+
+
+/**
+ * 
+ * @param {forradalom[]} adatarray bemeneti  tömb amelyet szűrni szeretnénk
+ * @param {function(forradalom):boolean} callback a szűrő függvény amelyet alkalmazni szeretnénk
+ * @returns 
+ */
 const filter = (adatarray, callback) => {//létrehozzuk a szűrő függvényt
     const filteredArray = [];//létrehozzuk az üres tömböt
     for (const elem of adatarray) {//végigmegyünk a tömb elemein
@@ -19,7 +26,11 @@ const filter = (adatarray, callback) => {//létrehozzuk a szűrő függvényt
     return filteredArray;//visszaadjuk az új tömböt
 
 }
-
+/**
+ * 
+ * @param {HTMLElement} containerDiv  a konténer div amelyhez hozzáadjuk a táblázatot
+ * @param {function(htmlElement):void }callback callback függvény amelyet a táblázat törzsének létrehozásához használunk
+ */
 const cratetable =(containerDiv, callback) => {//létrehozzuk a táblázatot
     const tableDiv = makeDiv1('table')////létrehozzuk a táblázat divet
     containerDiv.appendChild(tableDiv);//hozzáadjuk a táblázat divet a konténerhez
@@ -46,6 +57,12 @@ const cratetable =(containerDiv, callback) => {//létrehozzuk a táblázatot
 
 
 }
+/**
+ * 
+ * @param {htmlElement} tbody  a táblázat törzse amelyhez hozzáadjuk az új sort
+ * @param {htmlElement} containerDiv  a konténer div amelyhez hozzáadjuk a fájl feltöltő mezőt
+ * @param {htmlElement} array   a tömb amelyhez hozzáadjuk az új elemet
+ */
 const feltotles = (tbody, containerDiv,array) => {//létrehozzuk a feltöltés függvényt
     const fileupinput = document.createElement('input');//létrehozzuk a fájl feltöltő mezőt
     containerDiv.appendChild(fileupinput);//hozzáadjuk a fájl feltöltő mezőt a konténerhez
@@ -85,6 +102,12 @@ const feltotles = (tbody, containerDiv,array) => {//létrehozzuk a feltöltés f
     })
     
 }
+/**
+ * 
+ * @param {HTMLElement} tbody a táblázat törzse amelyhez hozzáadjuk az új sort
+ * @param {htmlElement} containerDiv  a konténer div amelyhez hozzáadjuk a fájl feltöltő mezőt
+ * @param {forradalom[]} array  a tömb amelyhez hozzáadjuk az új elemet
+ */
 const creatform =(tbody, containerDiv,array ) => {//létrehozzuk a formot
     const formdiv = makeDiv1('formdiv');//létrehozzuk a form divet
 
@@ -174,7 +197,11 @@ const creatform =(tbody, containerDiv,array ) => {//létrehozzuk a formot
     containerDiv.appendChild(formdiv);//hozzáadjuk a form divet a konténerhez
 }
 
-
+/**
+ * 
+ * @param {htmlElement} tbody  a táblázat törzse amelyhez hozzáadjuk az új sort
+ * @param {fieldellista} ertekek  a mező értékei amelyeket hozzáadunk az új sorhoz
+ */
 const sorhozzaadas = (tbody, ertekek) => {//létrehozzuk a sor hozzáadás függvényt
         const ujSor = document.createElement('tr');//létrehozzuk az új sort
         tbody.appendChild(ujSor);//hozzáadjuk az új sort a törzshöz
@@ -189,6 +216,11 @@ const sorhozzaadas = (tbody, ertekek) => {//létrehozzuk a sor hozzáadás függ
         sikerescella.textContent = ertekek.sikeres;//beállítjuk a cella tartalmát
         ujSor.appendChild(sikerescella);//hozzáadjuk a cellát az új sorhoz
 }
+/**
+ * 
+ * @param {HTMLElement} containerDiv  konténer div amelyhez hozzáadjuk a letöltés gombot
+ * @param {{forrradolom:String,evszam:String,sikeres:String}[]} array  tömb amelyet letölteni szeretnénk
+ */
 const letoltes = (containerDiv,array) => {//létrehozzuk a letöltés függvényt
     const letoltesgomb = document.createElement('button');//létrehozzuk a letöltés gombot
     letoltesgomb.textContent = 'letoltes';//beállítjuk a gomb szövegét
@@ -211,7 +243,12 @@ const letoltes = (containerDiv,array) => {//létrehozzuk a letöltés függvény
         URL.revokeObjectURL(link.href);//eltávolítjuk a linket
     });
 }
-
+/**
+ * 
+ * @param {HTMLElement} containerDiv a konténer div amelyhez hozzáadjuk a form szűrést
+ * @param {HTMLElement} tbody  a táblázat törzse amelyhez hozzáadjuk a szűrést
+ * @param {forradalom[]} array a tömb amelyet szűrni szeretnénk
+ */
 const formSzures = (containerDiv,tbody, array) => {//létrehozzuk a form szűrés függvényt
     const formdiv = makeDiv1('formdiv');//létrehozzuk a form divet
     containerDiv.appendChild(formdiv);//hozzáadjuk a form divet a konténerhez

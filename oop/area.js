@@ -1,18 +1,39 @@
+/**
+ * 
+ * @param {string} className a div class neve amelyet létrehozunk 
+ * @returns {HTMLElement} a létrehozott div elem 
+ */
 function makeDiv(className) {//létrehozzuk a makeDiv függvényt
     const div = document.createElement('div');//létrehozzuk a divet
     div.className = className;//beállítjuk a class nevét
     return div;//visszaadjuk a divet
 }
 class Area {//létrehozzuk az Area osztályt
+    /**
+     * @type {HTMLElement} div a div elem amelyet létrehozunk
+     */
     #div;//létrehozzuk a privát változót
+    /**
+     * @type {Manager} manager a manager amelyet beállítunk
+     */
     #manager;//létrehozzuk a manager privát változót
+    /**
+     * @returns {Manager} manager a manager amelyet beállítunk
+     */
     get manager() {//létrehozzuk a gettert
         return this.#manager;//visszaadjuk a manager privát változót
     }
+    /**
+     * @returns {HTMLElement} div a div elem amelyet létrehozunk
+     */
     get div() {//létrehozzuk a gettert
         return this.#div;//visszaadjuk a privát változót
     }
-
+    /**
+     * 
+     * @param {string} className  a div class neve amelyet létrehozunk
+     * @param {Manager} manager  a manager amelyet beállítunk
+     */
     constructor(className, manager) {//létrehozzuk a konstruktorot
         this.#manager = manager;//beállítjuk a manager privát változót
         const containerDiv = this.#getdivcontainer();//meghívjuk a #getdivcontainer függvényt
@@ -20,7 +41,10 @@ class Area {//létrehozzuk az Area osztályt
         this.#div.className = className;//beállítjuk a class nevét
         containerDiv.appendChild(this.#div);//hozzáadjuk a divet a konténerhez
     }
-
+    /**
+     * 
+     * @returns {HTMLElement} containerDiv a konténer div elem amelyet létrehozunk
+     */
     #getdivcontainer() {//meghívjuk a getdivcontainer függvényt
         let containerDiv = document.querySelector('.containeroop');//lekérjük a konténer divet
         if (!containerDiv) {//ha nem létezik a konténer div
@@ -30,42 +54,86 @@ class Area {//létrehozzuk az Area osztályt
         }
         return containerDiv;//visszaadjuk a konténer divet
     }
+    /**
+     * 
+     * @param {string} label  a gomb szövege amelyet létrehozunk
+     * @returns {HTMLButtonElement} gomb a létrehozott gomb elem
+     */
+    gombletrehozas(label) {
+        const gomb = document.createElement('button');//létrehozzuk a gombot
+        gomb.textContent = label;//beállítjuk a gomb szövegét
+        return gomb;//visszaadjuk a gombot
+
+    }
 }
 
 class Table extends Area {//létrehozzuk a Table osztályt
+    /**
+     * 
+     * @param {string} cssClass  a div class neve amelyet létrehozunk
+     * @param {Manager} manager  a manager amelyet beállítunk
+     */
     constructor(cssClass, manager) {//létrehozzuk a konstruktorot
         super(cssClass, manager);//meghívjuk a szülő osztály konstruktorát
         const tbody = this.#createtable()//meghívjuk a táblázat létrehozó metódust
 
-        this.manager.setAddDatacCallback((data) => {//beállítjuk az addDatacCallback függvényt
-            this.#addRow(tbody, data);//meghívjuk a #addRow függvényt
-        })
-        this.manager.setRenderCallback((array) => {//beállítjuk a renderCallback függvényt
-            tbody.innerHTML = '';//töröljük a tbody tartalmát
-            for (const data of array) {//végigmegyünk az arrayen
-                this.#addRow(tbody, data);//meghívjuk a #addRow függvényt
-            }
-        })
-      
+        this.manager.setAddDatacCallback(this.#addPersonCallback(tbody))//beállítjuk az addCallback függvényt
+        this.manager.setRenderCallback(this.#renderTableCallback(tbody))//beállítjuk a renderCallback függvényt
+
     }
+    /**
+     * 
+     * @param {HTMLElement} tableb megkapja a táblázat törzsét
+     * @returns {renderCallback} a renderCallback függvény amelyet beállítunk
+     */
+    #renderTableCallback(tableb) {//beállítjuk a renderCallback függvényt
+        return (data) => {//visszaad egy függvényt
+            tableb.innerHTML = '';//töröljük a tbody tartalmát
+            for (const pers of data) {//végigmegyünk az adatokon
+                this.#addRow(tableb, pers);//hozzáadjuk az adatokat a táblázathoz
+            }
+        }
+    }
+    /**
+     * 
+     * @param {HTMLElement} tableb megkaopja a táblázat törzsét
+     * @returns {addDatacCallback} a addPersonCallback függvény amelyet beállítunk
+     */
+    #addPersonCallback(tableb) {//beállítjuk az addCallback függvényt
+        return (pers) => {//visszaad egy függvényt
+            this.#addRow(tableb, pers);//hozzáadjuk az adatokat a táblázathoz
+        }
+    }
+    /**
+     * 
+     * @param {string} tbody  a táblázat törzse amelyhez hozzáadjuk az adatokat
+     * @param {Adat} data  az adatok amelyeket hozzáadunk a táblázathoz
+     */
     #addRow(tbody, data) {//létrehozzuk a #addRow függvényt
         const tbodyRow = document.createElement('tr');//létrehozzuk a tbody sort
         tbody.appendChild(tbodyRow);//hozzáadjuk a tbody sort a tbodyhoz
 
-        const forradalomcella = document.createElement('td');//létrehozzuk a forradalom cellát
-        forradalomcella.textContent = data.forradalom;//beállítjuk a forradalom cella tartalmát
-        tbodyRow.appendChild(forradalomcella);//hozzáadjuk a forradalom cellát a tbody sorhoz
+        this.#addCell(tbodyRow, data.forradalom);//hozzáadjuk a cellát a tbodyhoz
+        this.#addCell(tbodyRow, data.evszam);//hozzáadjuk a cellát a tbodyhoz
+        this.#addCell(tbodyRow, data.sikeres);//hozzáadjuk a cellát a tbodyhoz
 
-        const evszamcella = document.createElement('td');//létrehozzuk az evszam cellát
-        evszamcella.textContent = data.evszam;//beállítjuk az evszam cella tartalmát
-        tbodyRow.appendChild(evszamcella);//hozzáadjuk az evszam cellát a tbody sorhoz
-
-        const sikerescella = document.createElement('td');//létrehozzuk a sikeres cellát
-        sikerescella.textContent = data.sikeres////beállítjuk a sikeres cella tartalmát
-        tbodyRow.appendChild(sikerescella);//hozzáadjuk a sikeres cellát a tbody sorhoz
+    }
+    /**
+     * 
+     * @param {string} tbodyRow  a tbody sor amelyhez hozzáadjuk a cellát
+     * @param {string} textContent  a cella szövege amelyet hozzáadunk
+     * @param {string} type a cella típusa amelyet létrehozunk
+     */
+    #addCell(tbodyRow, textContent, type = 'td') {//létrehozzuk a #addCell függvényt
+        const cell = document.createElement(type);//létrehozzuk a cellát
+        cell.textContent = textContent;//beállítjuk a cella szövegét
+        tbodyRow.appendChild(cell);//hozzáadjuk a cellát a tbody sorhoz
     }
 
-
+    /**
+     * 
+     * @returns {HTMLElement} tbody a táblázat törzse amelyet létrehozunk
+     */
     #createtable() {//létrehozzuk a táblázatot
         const table = document.createElement('table');//létrehozzuk a táblázatot
         this.div.appendChild(table);//hozzáadjuk a táblázatot a divhez
@@ -78,9 +146,7 @@ class Table extends Area {//létrehozzuk a Table osztályt
 
         const cella = ['forradalom', 'evszam', 'sikeres'];//létrehozzuk a cellák tartalmát
         for (const cellatartalom of cella) {//végigmegyünk a cellákon
-            const fejcell = document.createElement('th');//létrehozzuk a fejléc cellát
-            fejcell.innerHTML = cellatartalom;//beállítjuk a cella tartalmát
-            fejsor.appendChild(fejcell);//hozzáadjuk a fejléc cellát a fejléc sorhoz
+            this.#addCell(fejsor, cellatartalom, 'th');//hozzáadjuk a cellát a fejléc sorhoz
         }
 
         const tbody = document.createElement('tbody');//létrehozzuk a törzset
@@ -90,11 +156,29 @@ class Table extends Area {//létrehozzuk a Table osztályt
 }
 
 class Form extends Area {//létrehozzuk a Form osztályt
+    /**
+     * @type {FormField[]} formFieldArray a form mezők tömbje
+     */
     #formFieldArray;//privát tömb a form mezőkhöz
+    /**
+     * 
+     * @param {string} cssClass  a div class neve amelyet létrehozunk
+     * @param {{fieldid:string,fieldlabel:string}[]} fieldellistaoop  a mezők listája amelyet létrehozunk
+     * @param {Manager} manager  a manager amelyet beállítunk
+     */
     constructor(cssClass, fieldellistaoop, manager) {//létrehozzuk a konstruktorot
         super(cssClass, manager);//meghívjuk a szülő osztály konstruktorát
         this.#formFieldArray = [];//inicializáljuk a mezők tömbjét
 
+        const form = this.#craeteForm(fieldellistaoop);//létrehozzuk a formot
+        form.addEventListener('submit', this.#formsubmit())////hozzáadunk egy eseményfigyelőt a formhoz
+    }
+    /**
+     * 
+     * @param {{fieldid:string,fieldlabel:string}[]} fieldellistaoop 
+     * @returns {HTMLElement} form a létrehozott form elem
+     */
+    #craeteForm(fieldellistaoop) {//létrehozzuk a formot
         const form = document.createElement('form');//létrehozzuk a formot
         this.div.appendChild(form);//hozzáadjuk a formot a divhez
 
@@ -103,87 +187,178 @@ class Form extends Area {//létrehozzuk a Form osztályt
             this.#formFieldArray.push(formField);//elmentjük a mezőt a tömbbe
             form.appendChild(formField.getDiv());//hozzáadjuk a mezőt a formhoz
         }
-
-        const gomb = document.createElement('button');//létrehozzuk a gombot
-        gomb.textContent = 'hozzáadás';//beállítjuk a gomb szövegét
+        const gomb = this.#gombletrehozas('Hozzáadás');//létrehozzuk a gombot
         form.appendChild(gomb);//hozzáadjuk a gombot a formhoz
+        return form;//visszaadjuk a formot
+    }
+    /**
+     * 
+     * @param {string} label a gomb szövege amelyet létrehozunk
+     * @returns {HTMLElement} gomb a létrehozott gomb elem
+     */
+    #gombletrehozas(label) {//létrehozzuk a gombot
+        const gomb = document.createElement('button');//létrehozzuk a gombot
+        gomb.type = 'submit';//beállítjuk a gomb típusát
+        gomb.textContent = label;//beállítjuk a gomb szövegét
+        return gomb;//visszaadjuk a gombot
+    }
+    /**
+     * 
+     * @returns {EventListener} a form submit eseményfigyelője
+     */
+    #formsubmit() {//létrehozzuk a form submit függvényt
+        return (e) => {//visszaad egy függvényt
+            e.preventDefault();//megakadályozzuk az alapértelmezett viselkedést
+            if (this.#errorFinder()) {//ha van hiba
+                const adatObj = this.#createAdatObj();//létrehozzuk az adat objektumot
+                const adt = new Adat(adatObj.forradalom, adatObj.evszam, adatObj.sikeres);//létrehozzuk az adat objektumot
+                this.manager.addData(adt);//hozzáadjuk az adatot a managerhez
+            }
+        }
 
-        form.addEventListener('submit', (event) => {//hozzáadunk egy eseményfigyelőt a formhoz
-            event.preventDefault();//megakadályozzuk az alapértelmezett viselkedést
-            const adat = {};//létrehozzuk az adat objektumot
-            let valid = true;//létrehozzuk a valid változót
-            for (const field of this.#formFieldArray) {//végigmegyünk a mezőkön
-                field.error = '';//töröljük a hibaüzenetet
-                if (!field.value) {//ha az érték üres
-                    field.error = 'Kötelező megadni';//beállítjuk a hibaüzenetet
-                    valid = false;//beállítjuk a valid változót hamisra
-                }
-                adat[field.id] = field.value;//elmentjük az értékeket az objektumba
+    }
+
+    /**
+     * 
+     * @returns {boolean} error a hibaüzenet
+     */
+    #errorFinder() {//létrehozzuk a hibaellenőrző függvényt
+        let error = true;//beállítjuk a hibát igazra
+        for (const errrorField of this.#formFieldArray) {//végigmegyünk a mezők listáján
+            errrorField.error = '';//töröljük a hibaüzenetet
+            if (errrorField.value === '') {//ha a mező üres
+                errrorField.error = 'Kötelező mező';//beállítjuk a hibaüzenetet
+                error = false;//beállítjuk a hibát hamisra
             }
-            if (valid) {//ha a valid változó igaz
-                const adatObj = new Adat(adat.forradalom, Number(adat.evszam), adat.sikeres);//létrehozzuk az adat objektumot
-                this.manager.addData(adatObj);//hozzáadjuk az adatot a managerhez
+
+        }
+        return error;//visszaadjuk a hibát
+    }
+    /**
+     * 
+     * @returns {{forradalom: string, evszam: number, sikeres: boolean}} adatObj az adat objektum
+     */
+    #createAdatObj() {//létrehozzuk az adat objektumot
+        const adatObj = {};//létrehozzuk az adat objektumot
+        for (const field of this.#formFieldArray) {//végigmegyünk a mezők listáján
+            if (field.id === 'sikeres') {//ha a mező a 'sikeres' mező
+                adatObj[field.id] = field.value;//beállítjuk az adat objektumban a mező értékét
+            } else {
+                adatObj[field.id] = field.value;//beállítjuk az adat objektumban a mező értékét
             }
-        })
+        }
+        return adatObj;//visszaadjuk az adat objektumot
     }
 }
+
 class UploadDownload extends Area {//létrehozzuk az Upload osztályt
+    /**
+     * 
+     * @param {string} cssClass  a div class neve amelyet létrehozunk
+     * @param {Manager} manager  a manager amelyet beállítunk
+     */
     constructor(cssClass, manager) {//létrehozzuk a konstruktorot
         super(cssClass, manager);//meghívjuk a szülő osztály konstruktorát
         const fileInput = document.createElement('input');//létrehozzuk a fájl bemeneti mezőt
         fileInput.id = 'fileinput';//beállítjuk a fájl bemeneti mező azonosítóját
         fileInput.type = 'file';//beállítjuk a fájl típusát
         this.div.appendChild(fileInput);//hozzáadjuk a fájl bemeneti mezőt a divhez
+        fileInput.addEventListener('change', this.#fileInputChange())//hozzáadunk egy eseményfigyelőt a fájl bemeneti mezőhöz
 
-        fileInput.addEventListener('change', (e) => {//hozzáadunk egy eseményfigyelőt a fájl bemeneti mezőhöz
-            const file = e.target.files[0];//lekérjük az első fájlt
-            const reader = new FileReader();//létrehozzuk a FileReader objektumot
-            reader.onload = (e) => {//amikor betöltődött a fájl
-                const lines = e.target.result.split('\n');//felosztjuk a fájlt sorokra
-                const removefejlec = lines.slice(1);//eltávolítjuk az első sort
-                for (const line of removefejlec) {//végigmegyünk a sorokon
-                    const removehead = line.trim();//eltávolítjuk a felesleges szóközöket
-                    const data = removehead.split(';');//felosztjuk a sort pontosvesszővel
-                    const adatObj = new Adat(data[0], Number(data[1]), data[2]);//létrehozzuk az adat objektumot
-                    this.manager.addData(adatObj);//hozzáadjuk az adatot a managerhez
-                }
-            };
-            reader.readAsText(file);//beolvassuk a fájlt szövegként
-        });
+
+
         const exportButton = document.createElement('button');//létrehozzuk az export gombot
-        exportButton.textContent = 'Letöltés';//beállítjuk a gomb szövegét
         this.div.appendChild(exportButton);//hozzáadjuk a gombot a divhez
-        exportButton.addEventListener('click', () => {//hozzáadunk egy eseményfigyelőt a gombhoz
-            const kapcs = document.createElement('a');//létrehozzuk a linket
-            const content = this.manager.generateExport()//lekérjük a manager export stringjét
-            const file = new Blob([content]);//létrehozzuk a fájlt a tartalommal
-            kapcs.href = URL.createObjectURL(file);//beállítjuk a link href-jét a fájlra
-            kapcs.download = 'adatok.csv';//beállítjuk a fájl nevét
-            kapcs.click();//kattintunk a linkre
-            URL.revokeObjectURL(kapcs.href);//felszabadítjuk a fájl URL-jét
-        })
+        exportButton.addEventListener('click', this.#exportButtonEventListener())//hozzáadunk egy eseményfigyelőt a gombhoz
+        exportButton.textContent = 'Letöltes';//beállítjuk a gomb szövegét
 
+
+    }
+    /**
+     * 
+     * @returns {EventListener} a gomb eseményfigyelője
+     */
+    #exportButtonEventListener() {//létrehozzuk az export gomb eseményfigyelőjét
+        return () => {//visszaad egy függvényt
+            const link = document.createElement('a');//létrehozzuk a linket
+            const content = this.manager.generateExport();//lekérjük a tartalmat
+            const file = new Blob([content])
+            link.href = URL.createObjectURL(file);//beállítjuk a link href-jét
+            link.download = 'export.csv';//beállítjuk a letöltési nevet
+            link.click();//letöltjük a fájlt
+            URL.revokeObjectURL(link.href);//töröljük a linket
+        }
+    }
+    /**
+     * 
+     * @returns {EventListener} a fájl bemeneti mező eseményfigyelője
+     */
+    #fileInputChange() {//létrehozzuk a fájl bemeneti mező eseményfigyelőjét
+        return (e) => {//visszaad egy függvényt
+            const selectfile = e.target.files[0];//lekérjük a fájlt
+            if (!selectfile) {//ha nincs fájl
+                console.error('Nincs fájl');//kiírjuk a hibát
+                return;//visszatérünk
+
+            }
+            const reader = new FileReader();//létrehozzuk a fájl olvasót
+            reader.onload = () => {//hozzáadunk egy eseményfigyelőt az olvasóhoz
+                const sorok = reader.result.split('\n');//lekérjük a fájl tartalmát
+                const adatSorok = sorok.slice(1)////lekérjük az adat sorokat
+                for (const sor of adatSorok) {
+                    const filterrow = sor.trim()
+                    const field = filterrow.split(';')//szétválasztjuk a sorokat
+                    const adatok = new Adat(field[0], field[1], field[2])//létrehozzuk az adatokat
+
+                    this.manager.addData(adatok)//hozzáadjuk az adatokat a managerhez
+                }
+            }
+            reader.readAsText(selectfile);//beolvassuk a fájlt
+        }
     }
 }
 
-class FormField {//létrehozzuk a FormField osztályt
-    #id;//privát mező az azonosítóhoz
-    #inputElement;//privát mező az input elemhez
-    #labelElement;//privát mező a címkéhez
-    #errorElement;//privát mező a hibaüzenethez
 
+class FormField {//létrehozzuk a FormField osztályt
+    /**
+     * @type {string} id az azonosító amelyet beállítunk
+     */
+    #id;//privát mező az azonosítóhoz
+    /**
+     * @type {HTMLElement} inputElement az input elem amelyet beállítunk
+     */
+    #inputElement;//privát mező az input elemhez
+    /**
+     * @type {HTMLElement} labelElement a címke elem amelyet beállítunk
+     */
+    #labelElement;//privát mező a címkéhez
+    /**
+     * @type {HTMLElement} errorElement a hibaüzenet elem amelyet beállítunk
+     */
+    #errorElement;//privát mező a hibaüzenethez
+    /**
+     * * @returns {string} id az azonosító amelyet beállítunk
+     */
     get id() {//getter az id-hez
         return this.#id;//visszaadja az id-t
     }
-
+    /**
+     *  @returns {string} value az input értéke amelyet beállítunk
+     */
     get value() {//getter az input értékéhez
         return this.#inputElement.value;//visszaadja az input értékét
     }
-
+    /**
+     * @param {string} value a hibaüzenet amelyet beállítunk
+     */
     set error(value) {//setter a hibaüzenethez
         this.#errorElement.textContent = value;//beállítja a hibaüzenetet
     }
-
+    /**
+     * 
+     * @param {string} id  a mező azonosítója amelyet beállítunk
+     * @param {string} labelContent  a mező címkéje amelyet beállítunk
+     */
     constructor(id, labelContent) {//konstruktor
         this.#id = id;//beállítjuk az id mezőt
         this.#labelElement = document.createElement('label');//létrehozzuk a címkét
@@ -211,7 +386,10 @@ class FormField {//létrehozzuk a FormField osztályt
         this.#errorElement = document.createElement('span');//hibaüzenet span
         this.#errorElement.className = 'error';//hibaüzenet class név
     }
-
+    /**
+     * 
+     * @returns {HTMLDivElement} div a mező div elem amelyet létrehozunk
+     */
     getDiv() {//visszaad egy divet, ami tartalmazza a mezőt
         const div = makeDiv('field');//létrehozzuk a mező divet
         const br1 = document.createElement('br');//új sor
