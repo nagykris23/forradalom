@@ -45,22 +45,17 @@ class FormFilter extends Area {//létrehozzuk a FormFilter osztályt
 
             let db = 0;//létrehozzuk a db változót
             this.manager.filter((adat) => {//szűrjük az adatokat
-               if(filterselect === ''&& filterbemenet === ''){//ha nincs kiválasztva semmi és a szövegmező üres
+                if(filterselect === '' || filterbemenet === ''){//ha nincs kiválasztva semmi és a szövegmező üres
                     db++;//növeljük a db változót
                     return true;//visszatérünk igaz értékkel
                 }
-                if(filterselect === ''){//ha nincs kiválasztva semmi
-                    return false;//visszatérünk hamis értékkel
-                }
-                if(filterbemenet !== ''){//ha a szövegmező nem üres
+              else{//ha a szövegmező nem üres
                    const egyezik = adat[filterselect] == filterbemenet;//ellenőrizzük, hogy az adatban lévő mező értéke megegyezik-e a szövegmező értékével
                    if(egyezik)db++;//növeljük a db változót
                    return egyezik;//visszatérünk az egyezés értékével
-
+ 
                     
                 }
-            
-                return false;//visszatérünk hamis értékkel 
                
             })
             talalatokoop.innerText = `Találatok: ${db}`;//beállítjuk a találatok számát megjelenítő elem szövegét
