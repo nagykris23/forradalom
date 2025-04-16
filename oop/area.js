@@ -106,7 +106,7 @@ class Table extends Area {//létrehozzuk a Table osztályt
     }
     /**
      * 
-     * @param {string} tbody  a táblázat törzse amelyhez hozzáadjuk az adatokat
+     * @param {HTMLTableSectionElement} tbody  a táblázat törzse amelyhez hozzáadjuk az adatokat
      * @param {Adat} data  az adatok amelyeket hozzáadunk a táblázathoz
      */
     #addRow(tbody, data) {//létrehozzuk a #addRow függvényt
@@ -120,10 +120,12 @@ class Table extends Area {//létrehozzuk a Table osztályt
     }
     /**
      * 
-     * @param {string} tbodyRow  a tbody sor amelyhez hozzáadjuk a cellát
+     * @param {HTMLTableRowElement} tbodyRow  a tbody sor amelyhez hozzáadjuk a cellát
      * @param {string} textContent  a cella szövege amelyet hozzáadunk
      * @param {string} type a cella típusa amelyet létrehozunk
+     * @returns {HTMLTableCellElement} cell a létrehozott cella elem    
      */
+
     #addCell(tbodyRow, textContent, type = 'td') {//létrehozzuk a #addCell függvényt
         const cell = document.createElement(type);//létrehozzuk a cellát
         cell.textContent = textContent;//beállítjuk a cella szövegét
@@ -241,11 +243,7 @@ class Form extends Area {//létrehozzuk a Form osztályt
     #createAdatObj() {//létrehozzuk az adat objektumot
         const adatObj = {};//létrehozzuk az adat objektumot
         for (const field of this.#formFieldArray) {//végigmegyünk a mezők listáján
-            if (field.id === 'sikeres') {//ha a mező a 'sikeres' mező
-                adatObj[field.id] = field.value;//beállítjuk az adat objektumban a mező értékét
-            } else {
-                adatObj[field.id] = field.value;//beállítjuk az adat objektumban a mező értékét
-            }
+          adatObj[field.id] = field.value;//beállítjuk az adat objektumot
         }
         return adatObj;//visszaadjuk az adat objektumot
     }

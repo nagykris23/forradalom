@@ -59,9 +59,9 @@ const cratetable =(containerDiv, callback) => {//létrehozzuk a táblázatot
 }
 /**
  * 
- * @param {htmlElement} tbody  a táblázat törzse amelyhez hozzáadjuk az új sort
+ * @param {HTMLTableSectionElement} tbody  a táblázat törzse amelyhez hozzáadjuk az új sort
  * @param {htmlElement} containerDiv  a konténer div amelyhez hozzáadjuk a fájl feltöltő mezőt
- * @param {htmlElement} array   a tömb amelyhez hozzáadjuk az új elemet
+ * @param {{forradalom: string, evszam: string, sikeres: string}[]} array   a tömb amelyhez hozzáadjuk az új elemet
  */
 const feltotles = (tbody, containerDiv,array) => {//létrehozzuk a feltöltés függvényt
     const fileupinput = document.createElement('input');//létrehozzuk a fájl feltöltő mezőt
@@ -104,9 +104,10 @@ const feltotles = (tbody, containerDiv,array) => {//létrehozzuk a feltöltés f
 }
 /**
  * 
- * @param {HTMLElement} tbody a táblázat törzse amelyhez hozzáadjuk az új sort
- * @param {htmlElement} containerDiv  a konténer div amelyhez hozzáadjuk a fájl feltöltő mezőt
- * @param {forradalom[]} array  a tömb amelyhez hozzáadjuk az új elemet
+ * 
+ * @param {HTMLSelectionElement} tbody a táblázat törzse amelyhez hozzáadjuk az új sort
+ * @param {HTMLElement} containerDiv  a konténer div amelyhez hozzáadjuk a fájl feltöltő mezőt
+ * @param {{forradalom:string,evszam:string,sikeres:string}[]} array  a tömb amelyhez hozzáadjuk az új elemet
  */
 const creatform =(tbody, containerDiv,array ) => {//létrehozzuk a formot
     const formdiv = makeDiv1('formdiv');//létrehozzuk a form divet
@@ -199,8 +200,8 @@ const creatform =(tbody, containerDiv,array ) => {//létrehozzuk a formot
 
 /**
  * 
- * @param {htmlElement} tbody  a táblázat törzse amelyhez hozzáadjuk az új sort
- * @param {fieldellista} ertekek  a mező értékei amelyeket hozzáadunk az új sorhoz
+ * @param {HTMLSelectElement} tbody  a táblázat törzse amelyhez hozzáadjuk az új sort
+ * @param {{forradalom:string,evszam:string,sikeres:string}} ertekek  a mező értékei amelyeket hozzáadunk az új sorhoz
  */
 const sorhozzaadas = (tbody, ertekek) => {//létrehozzuk a sor hozzáadás függvényt
         const ujSor = document.createElement('tr');//létrehozzuk az új sort
@@ -219,7 +220,7 @@ const sorhozzaadas = (tbody, ertekek) => {//létrehozzuk a sor hozzáadás függ
 /**
  * 
  * @param {HTMLElement} containerDiv  konténer div amelyhez hozzáadjuk a letöltés gombot
- * @param {{forrradolom:String,evszam:String,sikeres:String}[]} array  tömb amelyet letölteni szeretnénk
+ * @param {{forradolom:String,evszam:String,sikeres:String}[]} array  tömb amelyet letölteni szeretnénk
  */
 const letoltes = (containerDiv,array) => {//létrehozzuk a letöltés függvényt
     const letoltesgomb = document.createElement('button');//létrehozzuk a letöltés gombot
@@ -247,7 +248,7 @@ const letoltes = (containerDiv,array) => {//létrehozzuk a letöltés függvény
  * 
  * @param {HTMLElement} containerDiv a konténer div amelyhez hozzáadjuk a form szűrést
  * @param {HTMLElement} tbody  a táblázat törzse amelyhez hozzáadjuk a szűrést
- * @param {forradalom[]} array a tömb amelyet szűrni szeretnénk
+ * @param {{forradalom:string,evszam:string,sikeres:string}[]} array  a tömb amelyet szűrni szeretnénk
  */
 const formSzures = (containerDiv,tbody, array) => {//létrehozzuk a form szűrés függvényt
     const formdiv = makeDiv1('formdiv');//létrehozzuk a form divet
@@ -291,24 +292,30 @@ const formSzures = (containerDiv,tbody, array) => {//létrehozzuk a form szűré
     button.innerText = 'szures';//beállítjuk a gomb szövegét
     form.appendChild(button);//hozzáadjuk a gombot a formhoz
 
+    const talalt = document.createElement('p');//létrehozzuk a találatok számát
+    formdiv.appendChild(talalt);//hozzáadjuk a találatok számát a form divhez
+
     form.addEventListener('submit', (e) => {//hozzáadunk egy eseménykezelőt a formhoz
         e.preventDefault();//megakadályozzuk az alapértelmezett eseményt
 
-        const szuresinput =  e.target.querySelector('#szuresinput');//lekérjük a bemeneti mezőt
-        const szuresselect = e.target.querySelector('select');//lekérjük a legördülő menüt
+        const szuresinput =  e.target.querySelector('#szuresinput').value;//lekérjük a bemeneti mezőt
+        const szuresselect = e.target.querySelector('select').value;//lekérjük a legördülő menüt
 
-        const filterdarray = filter(array, (elem) => {//szűrjük a tömböt
-            const field = szuresselect.value;//lekérjük a mező értékét
-            if(field === '') return true;//ha a mező üres
-            return elem[field] === szuresinput.value;//visszaadjuk az elemet
-        });
-        tbody.innerHTML = '';//kiürítjük a törzset
-
-        for(const adat of filterdarray)//végigmegyünk a szűrt tömb elemein
-        {
-            sorhozzaadas(tbody, adat);//hozzáadjuk az új sort a táblázathoz
-
+        
+        if (szuresselect === '') {//ha a legördülő menü üres
+            talalt.innerText = '';//kiürítjük a találatok számát
+            return;//visszatérünk
         }
+
+        let db = 0;//letrehozzuk a találatok számát
+        for (const elem of array) {//végigmegyünk a tömb elemein
+            if (elem[szuresselect] === szuresinput) {//ha a mező értéke megegyezik a bemeneti mező értékével
+                db++;//növeljük a találatok számát
+            }
+        }
+
+        talalt.innerText = `Találatok száma: ${db}`;//beállítjuk a találatok számát
+     
 
     });
 }

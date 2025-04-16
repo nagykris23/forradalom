@@ -32,21 +32,32 @@ class FormFilter extends Area {//létrehozzuk a FormFilter osztályt
         const gomb = this.gombletrehozas('Szűrés');//létrehozzuk a gombot
         form.appendChild(gomb);//hozzáadjuk a gombot a formhoz
 
+        const talalatokoop = document.createElement('p');//létrehozzuk a találatok számát megjelenítő elemet 
+        this.div.appendChild(talalatokoop);//hozzáadjuk a találatok számát megjelenítő elemet a divhez
+       
+
         form.addEventListener('submit', (e) => {//hozzáadunk egy eseményfigyelőt a formhoz
             e.preventDefault();//megakadályozzuk az alapértelmezett viselkedést
 
             const filterbemenet = e.target.querySelector('#inputfilter');//lekérjük a szövegmezőt
             const filterselect = e.target.querySelector('select').value;//lekérjük a legördülő menüt
 
-            this.manager.filter((data) => {//szűrjük az adatokat
-                if (filterselect === '') {//ha a legördülő menü üres
-                    return true;//visszaadjuk az adatokat
+            if (filterselect === '') {//ha nincs kiválasztva semmi
+                alert('Kérlek válassz ki egy szűrőt!');//figyelmeztetjük a felhasználót
+                return;//kilépünk a függvényből
+            }
+            const adattomb = this.manager.getArray();//lekérjük az adatokat
+
+            let db = 0;//létrehozzuk a db változót
+            for (const adat of adattomb) {//végigmegyünk az adatokon
+                if (adat[filterselect] == filterbemenet.value) {//ha az adat megegyezik a szövegmező értékével
+                    db++;//növeljük a db változót
                 }
-                if(filterselect === 'evszam') {//ha az évszámot választottuk
-                    return data[filterselect] == filterbemenet.value;//visszaadjuk az adatokat
-                }
-                return data[filterselect] === filterbemenet.value;//visszaadjuk az adatokat
-            })
+
+                
+            }
+            talalatokoop.innerText = `Találatok: ${db}`;//beállítjuk a találatok számát megjelenítő elem szövegét
+
         })
     }
 }

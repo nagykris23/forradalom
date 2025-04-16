@@ -1,10 +1,10 @@
 /**
  *  @callback renderCallback
- * @param {HTMLElement} tbody a táblázat törzs eleme
+ * @param {Adat[]} data az adatok amelyeket renderelünk
  * @returns {void} a visszatérési érték típusa
  * 
  * @callback addDatacCallback
- * @param {HTMLElement} tbody a táblázat törzs eleme
+ * @param {Adat} data az adat amelyet hozzáadunk
  * @returns {void} a visszatérési érték típusa
  * 
  */
@@ -26,8 +26,9 @@ class Manager {
         this.#array = []//beállítja az array mezőt
     }
     /**
-     * 
-     * @param {Function} callback  a callback függvény amelyet beállítjuk
+     * @callback addDatacCallback Az adat amelyet hozzáadunk
+     * @param {Adat} data az adat amelyet hozzáadunk
+     * @returns {void} a visszatérési érték típusa
      */
     setAddDatacCallback(callback) {//beállítja az addDatacCallback mezőt
         this.#addDatacCallback = callback//beállítja az addDatacCallback mezőt
@@ -43,7 +44,8 @@ class Manager {
     }
     /**
      * 
-     * @param {Function} callback  callback függvény amelyet beállítunk hogyan rendereljük az adatokat
+     * @param {renderCallback} callback  a callback függvény amelyet beállítunk
+     * 
      */
     setRenderCallback(callback) {//beállítja a renderCallback mezőt
         this.#renderCallback = callback//beállítja a renderCallback mezőt
@@ -72,5 +74,12 @@ class Manager {
             }
         }
         this.#renderCallback(eredmeny)//visszahívja a renderCallback függvényt
+    }
+    /**
+     * 
+     * @returns {Adat[]} array az adatok tömbje
+     */
+    getArray() {//visszaadja az arrayt
+        return this.#array//visszaadja az arrayt
     }
 }
