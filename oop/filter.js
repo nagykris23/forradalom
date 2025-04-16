@@ -39,23 +39,30 @@ class FormFilter extends Area {//létrehozzuk a FormFilter osztályt
         form.addEventListener('submit', (e) => {//hozzáadunk egy eseményfigyelőt a formhoz
             e.preventDefault();//megakadályozzuk az alapértelmezett viselkedést
 
-            const filterbemenet = e.target.querySelector('#inputfilter');//lekérjük a szövegmezőt
+            const filterbemenet = e.target.querySelector('#inputfilter').value.trim() ;//lekérjük a szövegmezőt
             const filterselect = e.target.querySelector('select').value;//lekérjük a legördülő menüt
 
-            if (filterselect === '') {//ha nincs kiválasztva semmi
-                alert('Kérlek válassz ki egy szűrőt!');//figyelmeztetjük a felhasználót
-                return;//kilépünk a függvényből
-            }
-            const adattomb = this.manager.getArray();//lekérjük az adatokat
 
             let db = 0;//létrehozzuk a db változót
-            for (const adat of adattomb) {//végigmegyünk az adatokon
-                if (adat[filterselect] == filterbemenet.value) {//ha az adat megegyezik a szövegmező értékével
+            this.manager.filter((adat) => {//szűrjük az adatokat
+               if(filterselect === ''&& filterbemenet === ''){//ha nincs kiválasztva semmi és a szövegmező üres
                     db++;//növeljük a db változót
+                    return true;//visszatérünk igaz értékkel
                 }
+                if(filterselect === ''){//ha nincs kiválasztva semmi
+                    return false;//visszatérünk hamis értékkel
+                }
+                if(filterbemenet !== ''){//ha a szövegmező nem üres
+                   const egyezik = adat[filterselect] == filterbemenet;//ellenőrizzük, hogy az adatban lévő mező értéke megegyezik-e a szövegmező értékével
+                   if(egyezik)db++;//növeljük a db változót
+                   return egyezik;//visszatérünk az egyezés értékével
 
-                
-            }
+                    
+                }
+            
+                return false;//visszatérünk hamis értékkel 
+               
+            })
             talalatokoop.innerText = `Találatok: ${db}`;//beállítjuk a találatok számát megjelenítő elem szövegét
 
         })

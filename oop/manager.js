@@ -82,4 +82,12 @@ class Manager {
     getArray() {//visszaadja az arrayt
         return this.#array//visszaadja az arrayt
     }
+    /**
+     * 
+     * @param {filter} callback 
+     * @returns 
+     */
+    filter(callback) {//szűri az arrayt 
+        return this.#array.filter(callback)//visszaadja a szűrt arrayt
+    }
 }

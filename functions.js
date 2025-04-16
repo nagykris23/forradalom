@@ -12,7 +12,8 @@ const makeDiv1 = (className) => {//arroww functione seggíttségével hozzuk lé
 
 /**
  * 
- * @param {forradalom[]} adatarray bemeneti  tömb amelyet szűrni szeretnénk
+ * @param {adatarray} adatarray a tömb amelyet szűrni szeretnénk
+ * 
  * @param {function(forradalom):boolean} callback a szűrő függvény amelyet alkalmazni szeretnénk
  * @returns 
  */
